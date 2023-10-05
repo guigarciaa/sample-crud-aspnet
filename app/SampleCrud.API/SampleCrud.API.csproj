@@ -11,4 +11,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SampleCrud.Application\SampleCrud.Application.csproj" />
+    <ProjectReference Include="..\SampleCrud.Data\SampleCrud.Data.csproj" />
+    <ProjectReference Include="..\SampleCrud.Domain\SampleCrud.Domain.csproj" />
+    <ProjectReference Include="..\SampleCrud.Infra\SampleCrud.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
