@@ -1,23 +1,38 @@
 version: '3.2'
 
 services:
-  web:
-    build: .
+  sample_crud_app1:
+    image: ${DOCKER_REGISTRY-}app
+    container_name: sample_crud
+    build:
+        context: ../app
+        dockerfile: .
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/code
-    networks:
-      - host
+      - "5261:80"
     depends_on:
       - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '0.9GB'
       
   db:
     image: postgres
-    volumes:
-      - ./data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: admin
+      POSTGRES_DB: sample_crud_db
+    volumes:
+      - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.4GB'
 
 networks:
   host:
