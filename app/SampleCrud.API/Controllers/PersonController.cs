@@ -10,6 +10,17 @@ namespace SampleCrud.API.Controllers
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
     {
-        
+        private readonly ILogger<PersonController> _logger;
+        public PersonController(ILogger<PersonController> logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(new { message = "Hello World" });
+        }
+    
     }
 }
