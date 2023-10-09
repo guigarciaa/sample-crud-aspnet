@@ -6,16 +6,17 @@ namespace SampleCrud.Infra.Data.Context
 {
     public class ApplicationContext : DbContext
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
-            : base(options)
-        {
-        }
+        public ApplicationContext() { }
 
-        DbSet<Person> Persons { get; set; }
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+            : base(options) { }
+
+        public DbSet<Person> Person { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Person>().ToTable("Person");
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

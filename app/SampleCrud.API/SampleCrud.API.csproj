@@ -8,12 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SampleCrud.Application\SampleCrud.Application.csproj" />
-    <ProjectReference Include="..\SampleCrud.Data\SampleCrud.Data.csproj" />
     <ProjectReference Include="..\SampleCrud.Domain\SampleCrud.Domain.csproj" />
     <ProjectReference Include="..\SampleCrud.Infra\SampleCrud.Infra.csproj" />
   </ItemGroup>

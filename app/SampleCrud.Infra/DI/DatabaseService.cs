@@ -10,7 +10,7 @@ namespace SampleCrud.Infra.IoC
         public static void AddInfraDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql("Host=localhost;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres"));
 
             Console.WriteLine("DatabaseManagementService.AddInfraDatabase");
         }

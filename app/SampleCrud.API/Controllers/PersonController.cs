@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SampleCrud.Domain.Entities;
+using SampleCrud.Domain.Services;
 
 namespace SampleCrud.API.Controllers
 {
@@ -11,16 +13,25 @@ namespace SampleCrud.API.Controllers
     public class PersonController : ControllerBase
     {
         private readonly ILogger<PersonController> _logger;
-        public PersonController(ILogger<PersonController> logger)
+        private readonly IPersonService _personService;
+        public PersonController(ILogger<PersonController> logger, IPersonService personService)
         {
             _logger = logger;
+            _personService = personService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public JsonResult Get()
         {
-            return Ok(new { message = "Hello World" });
+            return new JsonResult(new { message = "Hello World" });
         }
-    
+
+        [HttpPost]
+        public JsonResult Post([FromBody] Person person)
+        {
+            _personService.Add(person);
+            return new JsonResult(new { message = person });
+        }
+
     }
 }
