@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleCrud.Infra.Data.Context;
 
-namespace SampleCrud.Infra.IoC
+namespace SampleCrud.Infra.Data
 {
     public static class DatabaseService
     {
