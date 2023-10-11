@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SampleCrud.Domain.Entities;
 using SampleCrud.Domain.Repositories;
 using SampleCrud.Domain.Services;
@@ -21,14 +17,28 @@ namespace SampleCrud.Application.Services
             _personRepository.Add(person);
         }
 
-        public Task<Person> GetById(int? id)
+        public async Task<Person> GetById(Guid? id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _personRepository.GetById(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<IEnumerable<Person>> GetPersons()
+        public async Task<IEnumerable<Person>> GetPersons()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _personRepository.GetPersons();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Remove(Person person)
