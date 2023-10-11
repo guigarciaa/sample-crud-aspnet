@@ -2,6 +2,7 @@ using SampleCrud.Application.Services;
 using SampleCrud.Data.Repositories;
 using SampleCrud.Domain.Repositories;
 using SampleCrud.Domain.Services;
+using SampleCrud.Infra.Data;
 
 namespace SampleCrud.Infra.IoC
 {
