@@ -67,9 +67,9 @@ namespace SampleCrud.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public JsonResult Delete(int id, [FromBody] Person person)
+        public JsonResult Delete(Guid id)
         {
-            _personService.Remove(person);
+            _personService.Remove(id);
             return new JsonResult(new { message = "Hello World" });
         }
     }

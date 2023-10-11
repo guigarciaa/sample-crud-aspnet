@@ -16,8 +16,15 @@ namespace SampleCrud.Data.Repositories
 
         public void Add(Person person)
         {
-            _context.Add(person);
-            _context.SaveChanges(); 
+            try
+            {
+                _context.Add(person);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<Person> GetById(Guid? id)
@@ -32,14 +39,28 @@ namespace SampleCrud.Data.Repositories
 
         public void Remove(Person person)
         {
-            _context.Remove(person);
-            _context.SaveChanges();
+            try
+            {
+                _context.Remove(person);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Update(Person person)
         {
-            _context.Update(person);
-            _context.SaveChanges();
+            try
+            {
+                _context.Update(person);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

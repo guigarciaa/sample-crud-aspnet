@@ -6,9 +6,8 @@ namespace SampleCrud.Domain.Services
     {
         Task<IEnumerable<Person>> GetPersons();
         Task<Person> GetById(Guid? id);
-
         void Add(Person person);
         void Update(Person person);
-        void Remove(Person person);
+        void Remove(Guid id);
     }
 }

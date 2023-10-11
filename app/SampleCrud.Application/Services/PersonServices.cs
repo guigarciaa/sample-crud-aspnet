@@ -41,14 +41,32 @@ namespace SampleCrud.Application.Services
             }
         }
 
-        public void Remove(Person person)
+        public async void Remove(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var _person = await _personRepository.GetById(id);
+                if (_person != null)
+                {
+                    _personRepository.Remove(_person);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Update(Person person)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _personRepository.Update(person);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
