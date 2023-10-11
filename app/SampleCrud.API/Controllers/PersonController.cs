@@ -42,7 +42,7 @@ namespace SampleCrud.API.Controllers
                 var person = await _personService.GetById(id);
 
                 if (person == null)
-                    return NotFound();
+                    return NotFound("Person not found.");
 
                 return Ok(person);
             }
@@ -55,8 +55,22 @@ namespace SampleCrud.API.Controllers
         [HttpPost]
         public ActionResult<Person> Post([FromBody] Person person)
         {
-            _personService.Add(person);
-            return Ok(person);
+            try
+            {
+                if (person == null)
+                    return BadRequest("Person is null.");
+
+                if (!ModelState.IsValid)
+                    return BadRequest();
+
+                _personService.Add(person);
+
+                return Ok("Person created successfully.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("{id}")]
