@@ -55,22 +55,42 @@ namespace SampleCrud.API.Controllers
         [HttpPost]
         public ActionResult<Person> Post([FromBody] Person person)
         {
-                _personService.Add(person);
-                return Ok(person);
+            _personService.Add(person);
+            return Ok(person);
         }
 
         [HttpPut("{id}")]
-        public JsonResult Put(int id, [FromBody] Person person)
+        public IActionResult Put([FromBody] Person person)
         {
-            _personService.Update(person);
-            return new JsonResult(new { message = person });
+            try
+            {
+                var personToUpdate = _personService.GetById(person.Id);
+                if (personToUpdate == null)
+                    NotFound("Person not found.");
+
+                return Ok("Person updated successfully.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public JsonResult Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            _personService.Remove(id);
-            return new JsonResult(new { message = "Hello World" });
+            try
+            {
+                var personToDelete = _personService.GetById(id);
+                if (personToDelete == null)
+                    NotFound("Person not found.");
+
+                return Ok("Person deleted successfully.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
