@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SampleCrud.Domain.Entities;
 using SampleCrud.Domain.Services;
 
@@ -61,11 +62,10 @@ namespace SampleCrud.API.Controllers
                     return BadRequest("Person is null.");
 
                 if (!ModelState.IsValid)
-                    return BadRequest();
+                    return BadRequest(ModelState.ValidationState);
 
                 _personService.Add(person);
-
-                return Ok("Person created successfully.");
+                return CreatedAtAction(nameof(Get), new { id = person.Id }, person);
             }
             catch (Exception e)
             {
