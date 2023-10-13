@@ -7,7 +7,8 @@ namespace SampleCrud.Domain.Entities
     public class Person
     {
         private List<string> _errors = new List<string>();
-        public Guid Id { get; } = Guid.NewGuid();
+
+        public Guid Id { get; set; }
 
         [
             Required(ErrorMessage = "Nickname is required"),
@@ -35,8 +36,14 @@ namespace SampleCrud.Domain.Entities
         ]
         public DateOnly? Birthday { get; set; }
 
+        [StringLength(32, ErrorMessage = "Stack must be max 32 characters")]
         public List<string>? Stack { get; set; }
 
+
+        public Person()
+        {
+            
+        }
 
         public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
         {
@@ -90,9 +97,14 @@ namespace SampleCrud.Domain.Entities
                 _errors.Add("Birthday is required");
             }
 
-            if (Stack == null)
+            // Stack Validations
+            if (Stack.Count > 0)
             {
-                _errors.Add("Stack is required");
+                var verifyLengthEnchStack = Stack.Exists(x => x.Length > 32);
+                if (verifyLengthEnchStack)
+                {
+                    _errors.Add("Stack must be max 32 characters");
+                }
             }
 
             return _errors.Count == 0;
