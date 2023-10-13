@@ -29,12 +29,19 @@ namespace SampleCrud.Data.Repositories
 
         public async Task<Person> GetById(Guid? id)
         {
-            return await _context.Person.FirstOrDefaultAsync(m => m.Id == id) ?? throw new ArgumentNullException(nameof(id));
+            return await _context.Person.FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<IEnumerable<Person>> GetPersons()
         {
-            return await _context.Person.ToListAsync();
+            try
+            {
+                return await _context.Person.ToListAsync();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
 
         public void Remove(Person person)
