@@ -8,7 +8,7 @@ namespace SampleCrud.Domain.Entities
     {
         private List<string> _errors = new List<string>();
 
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [
             Required(ErrorMessage = "Nickname is required"),
