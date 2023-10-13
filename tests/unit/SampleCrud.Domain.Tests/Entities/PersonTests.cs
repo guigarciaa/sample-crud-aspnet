@@ -76,5 +76,23 @@ namespace SampleCrud.Domain.Tests.Entities
             // Assert
             Assert.Equal("One or more errors occurred. (Name must be between 3 and 100 characters)", ex.Message);
         }
+
+        [Fact]
+        public void Should_Fail_If_Trying_Create_Person_With_Stack_Grater_Than_ThrityTwo_Characters()
+        {
+            // Arrange
+            var nickname = "teste";
+            var name = "teste";
+            var email = "teste@teste.com";
+            var birthday = new DateOnly();
+            var stack = new List<string>() { "Lorem ipsum dolor sit amet, consectetur adipiscing elit." };
+
+            // Act
+            var act = () => new Person(nickname, name, email, birthday, stack);
+            var ex = Assert.Throws<AggregateException>(() => act.Invoke());
+
+            // Assert
+            Assert.Equal("One or more errors occurred. (Stack must be max 32 characters)", ex.Message);
+        }
     }
 }
