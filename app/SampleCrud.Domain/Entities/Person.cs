@@ -1,16 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Globalization;
 
 namespace SampleCrud.Domain.Entities
 {
     public class Person
     {
-        private Guid? _id;
-        public Guid? Id
-        {
-            get => _id;
-            set => _id = Guid.NewGuid();
-        }
+        private List<string> _errors = new List<string>();
+        public Guid Id { get; } = Guid.NewGuid();
 
         [
             Required(ErrorMessage = "Nickname is required"),
@@ -23,6 +20,7 @@ namespace SampleCrud.Domain.Entities
             StringLength(100, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 100 characters")
         ]
         public string? Name { get; set; }
+
 
         [
             Required(ErrorMessage = "Email is required"),
@@ -38,5 +36,66 @@ namespace SampleCrud.Domain.Entities
         public DateOnly? Birthday { get; set; }
 
         public List<string>? Stack { get; set; }
+
+
+        public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
+        {
+            Nickname = nickname;
+            Name = name;
+            Email = email;
+            Birthday = birthday;
+            Stack = stack;
+
+            if (!IsValid())
+            {
+                throw new AggregateException(_errors.Select(x => new Exception(x)));
+            }
+        }
+
+        public bool IsValid()
+        {
+            // Nickname Validations
+            if (string.IsNullOrEmpty(Nickname))
+            {
+                _errors.Add("Nickname is required");
+            }
+            if (Nickname?.Length < 3 || Nickname?.Length > 32)
+            {
+                _errors.Add("Nickname must be between 3 and 32 characters");
+            }
+
+            // Name Validations
+            if (string.IsNullOrEmpty(Name))
+            {
+                _errors.Add("Name is required");
+            }
+            if (Name?.Length < 3 || Name?.Length > 100)
+            {
+                _errors.Add("Name must be between 3 and 100 characters");
+            }
+
+            // Email Validations
+            if (string.IsNullOrEmpty(Email))
+            {
+                _errors.Add("Email is required");
+            }
+            if (Email != null && !new EmailAddressAttribute().IsValid(Email))
+            {
+                _errors.Add("Invalid email address");
+            }
+
+            // Birthday Validations
+            if (Birthday == null)
+            {
+                _errors.Add("Birthday is required");
+            }
+
+            if (Stack == null)
+            {
+                _errors.Add("Stack is required");
+            }
+
+            return _errors.Count == 0;
+        }
     }
 }
