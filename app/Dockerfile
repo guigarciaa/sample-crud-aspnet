@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
-EXPOSE 80
 
 # Copy all foldes, files inside SampleCrud/ and Paste in . inside of docker image.
 COPY . .

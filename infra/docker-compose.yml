@@ -1,21 +1,25 @@
 version: '3.2'
 
 services:
-  # sample_crud_app1:
-  #   image: ${DOCKER_REGISTRY-}app
-  #   container_name: sample_crud
-  #   build:
-  #       context: ../app
-  #       dockerfile: .
-  #   ports:
-  #     - "5261:80"
-  #   depends_on:
-  #     - db
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '0.15'
-  #         memory: '0.5GB'
+  sample_crud_app1:
+    image: ${DOCKER_REGISTRY-}app
+    container_name: sample_crud
+    build:
+        context: ../app
+        dockerfile: .
+    ports:
+      - "5261:80"
+    depends_on:
+      - db
+    restart: always
+    environment: 
+        - DBHOST=database
+        - ASPNETCORE_ENVIRONMENT=Development
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.5GB'
       
   db:
     image: postgres
