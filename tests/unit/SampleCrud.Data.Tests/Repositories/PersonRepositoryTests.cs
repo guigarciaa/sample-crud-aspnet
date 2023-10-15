@@ -1,58 +1,79 @@
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using SampleCrud.Data.Repositories;
 using SampleCrud.Domain.Entities;
-using SampleCrud.Domain.Repositories;
+using SampleCrud.Infra.Data.Context;
 
 namespace SampleCrud.Data.Tests.Repositories;
 
 public class PersonRepositoryTests
 {
-    private readonly Mock<IPersonRepository> _mockPersonRepository;
+    private readonly Mock<ApplicationContext> _mockApplicationContext;
 
     public PersonRepositoryTests()
     {
-        _mockPersonRepository = new Mock<IPersonRepository>();
+        _mockApplicationContext = new Mock<ApplicationContext>();
     }
 
     [Fact]
-    public async Task Should_Be_True_With_Returned_An_List_Of_Persons()
+    public void Should_Be_True_If_Add_a_Person_in_DBSet_Person()
     {
-        _mockPersonRepository.Setup(x => x.GetPersons()).ReturnsAsync(new List<Person>()
+        var mockSet = new Mock<DbSet<Person>>();
+
+        var mockContext = new Mock<ApplicationContext>();
+        mockContext.Setup(m => m.Person).Returns(mockSet.Object);
+
+        var service = new PersonRepository(mockContext.Object);
+        var person = new Person
         {
-            new Person
-            {
-                Id = Guid.NewGuid(),
-                Name = "Teste 1",
-                Email = ""
-            },
-            new Person
-            {
-                Id = Guid.NewGuid(),
-                Name = "Teste 2",
-                Email = ""
-            },
-        });
-
-        var persons = await _mockPersonRepository.Object.GetPersons();
-
-        Assert.NotNull(persons);
-        Assert.True(persons.Any());
-    }
-
-    [Fact]
-    public async Task Should_Be_True_With_Returned_An_Person_By_Id()
-    {
-        var id = Guid.NewGuid();
-
-        _mockPersonRepository.Setup(x => x.GetById(id)).ReturnsAsync(new Person
-        {
-            Id = id,
+            Id = Guid.NewGuid(),
             Name = "Teste 1",
             Email = ""
-        });
+        };
+        service.Add(person);
 
-        var person = await _mockPersonRepository.Object.GetById(id);
+        mockSet.Verify(m => m.Add(It.IsAny<Person>()), Times.Once());
+        mockContext.Verify(m => m.SaveChanges(), Times.Once());
+    }
 
-        Assert.NotNull(person);
-        Assert.Equal(id, person.Id);
+    [Fact]
+    public void Should_Be_True_If_Update_a_Person_in_DBSet_Person() {
+        var mockSet = new Mock<DbSet<Person>>();
+
+        var mockContext = new Mock<ApplicationContext>();
+        mockContext.Setup(m => m.Person).Returns(mockSet.Object);
+
+        var service = new PersonRepository(mockContext.Object);
+        var person = new Person
+        {
+            Id = Guid.NewGuid(),
+            Name = "Teste 1",
+            Email = ""
+        };
+        service.Update(person);
+
+        mockSet.Verify(m => m.Update(It.IsAny<Person>()), Times.Once());
+        mockContext.Verify(m => m.SaveChanges(), Times.Once());
+    }
+
+    [Fact]
+    public void Should_Be_True_If_Remove_a_Person_in_DBSet_Person()
+    {
+        var mockSet = new Mock<DbSet<Person>>();
+
+        var mockContext = new Mock<ApplicationContext>();
+        mockContext.Setup(m => m.Person).Returns(mockSet.Object);
+
+        var service = new PersonRepository(mockContext.Object);
+        var person = new Person
+        {
+            Id = Guid.NewGuid(),
+            Name = "Teste 1",
+            Email = ""
+        };
+        service.Remove(person);
+
+        mockSet.Verify(m => m.Remove(It.IsAny<Person>()), Times.Once());
+        mockContext.Verify(m => m.SaveChanges(), Times.Once());
     }
 }

@@ -18,7 +18,7 @@ namespace SampleCrud.Data.Repositories
         {
             try
             {
-                _context.Add(person);
+                _context.Person.Add(person);
                 _context.SaveChanges();
             }
             catch (Exception)
@@ -48,7 +48,7 @@ namespace SampleCrud.Data.Repositories
         {
             try
             {
-                _context.Remove(person);
+                _context.Person.Remove(person);
                 _context.SaveChanges();
             }
             catch (Exception)
@@ -61,7 +61,7 @@ namespace SampleCrud.Data.Repositories
         {
             try
             {
-                _context.Update(person);
+                _context.Person.Update(person);
                 _context.SaveChanges();
             }
             catch (Exception)
