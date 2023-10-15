@@ -29,7 +29,7 @@ namespace SampleCrud.Data.Repositories
 
         public async Task<Person> GetById(Guid? id)
         {
-            return await _context.Person.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Person.FindAsync(typeof(Guid), id);
         }
 
         public async Task<IEnumerable<Person>> GetPersons()
@@ -38,7 +38,7 @@ namespace SampleCrud.Data.Repositories
             {
                 return await _context.Person.ToListAsync();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw;
             }
