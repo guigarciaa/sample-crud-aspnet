@@ -37,7 +37,8 @@ namespace SampleCrud.Application.Services
             }
             catch (Exception)
             {
-                throw;
+                Console.WriteLine("Erro ao buscar pessoas");
+                throw new Exception();
             }
         }
 
