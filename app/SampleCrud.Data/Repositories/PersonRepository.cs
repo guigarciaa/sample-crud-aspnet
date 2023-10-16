@@ -27,9 +27,9 @@ namespace SampleCrud.Data.Repositories
             }
         }
 
-        public async Task<Person> GetById(Guid? id)
+        public async Task<Person?> GetById(Guid? id)
         {
-            return await _context.Person.FindAsync(typeof(Guid), id);
+            return await _context.Person.FindAsync(typeof(Guid), id) ?? null;
         }
 
         public async Task<IEnumerable<Person>> GetPersons()

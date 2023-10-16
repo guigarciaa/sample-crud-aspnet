@@ -98,7 +98,7 @@ namespace SampleCrud.Domain.Entities
             }
 
             // Stack Validations
-            if (Stack.Count > 0)
+            if (Stack != null && Stack.Count > 0)
             {
                 var verifyLengthEnchStack = Stack.Exists(x => x.Length > 32);
                 if (verifyLengthEnchStack)

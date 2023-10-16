@@ -91,13 +91,16 @@ namespace SampleCrud.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                var personToDelete = _personService.GetById(id);
+                if(id == Guid.Empty)
+                    return BadRequest("Person id is null.");
+
+                var personToDelete = await _personService.GetById(id);
                 if (personToDelete == null)
-                    NotFound("Person not found.");
+                    return NotFound("Person not found.");
 
                 return Ok("Person deleted successfully.");
             }
