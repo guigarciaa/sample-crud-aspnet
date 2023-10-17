@@ -1,3 +1,5 @@
+using Prometheus;
+using SampleCrud.API;
 using SampleCrud.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
+
+builder.Services.AddHealthChecks()
+    // Define a sample health check that always signals healthy state.
+    .AddCheck<HealthCheck>(nameof(HealthCheck))
+    // Report health check results in the metrics output.
+    .ForwardToPrometheus();
 
 var app = builder.Build();
 
@@ -20,8 +28,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Capture metrics about all received HTTP requests.
+app.UseHttpMetrics();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapMetrics();
 
 app.Run();

@@ -12,6 +12,8 @@ services:
     depends_on:
       - db
     restart: always
+    networks:
+      - host
     environment: 
         - DBHOST=database
         - ASPNETCORE_ENVIRONMENT=Development
@@ -31,14 +33,43 @@ services:
       POSTGRES_USER: admin
       POSTGRES_DB: sample_crud_db
     volumes:
-      - ./context.sql:/docker-entrypoint-initdb.d/context.sql
+      - ./db/context.sql:/docker-entrypoint-initdb.d/context.sql
     deploy:
       resources:
         limits:
           cpus: '0.15'
           memory: '0.5GB'
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - host
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.5GB'
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning/datasource:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
+    depends_on:
+      - prometheus
+    networks:
+      - host
+
 networks:
   host:
-    name: host
-    external: true
+    driver: bridge

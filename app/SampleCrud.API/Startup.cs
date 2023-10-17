@@ -1,3 +1,4 @@
+using Prometheus.DotNetRuntime;
 using SampleCrud.Application.Services;
 using SampleCrud.Data.Repositories;
 using SampleCrud.Domain.Repositories;
