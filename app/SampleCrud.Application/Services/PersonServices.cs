@@ -17,7 +17,7 @@ namespace SampleCrud.Application.Services
             _personRepository.Add(person);
         }
 
-        public async Task<Person> GetById(Guid? id)
+        public async Task<Person?> GetById(Guid id)
         {
             try
             {
