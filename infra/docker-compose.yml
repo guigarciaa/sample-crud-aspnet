@@ -63,6 +63,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./grafana/default.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/datasource:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
     depends_on:
