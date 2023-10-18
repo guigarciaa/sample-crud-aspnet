@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Globalization;
+using System.Text.Json.Serialization;
+using System.ComponentModel;
 
 namespace SampleCrud.Domain.Entities
 {
@@ -8,6 +10,7 @@ namespace SampleCrud.Domain.Entities
     {
         private List<string> _errors = new List<string>();
 
+        [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [
@@ -32,20 +35,21 @@ namespace SampleCrud.Domain.Entities
         [
             Required(ErrorMessage = "Birthday is required"),
             DataType(DataType.Date),
-            DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)
+            DisplayFormat(DataFormatString = "{dd-MM-yyyy}", ApplyFormatInEditMode = true)
         ]
-        public DateOnly? Birthday { get; set; }
 
-        [StringLength(32, ErrorMessage = "Stack must be max 32 characters")]
-        public List<string>? Stack { get; set; }
+        public DateTime? Birthday { get; set; }
+
+        // [StringLength(32, ErrorMessage = "Stack must be max 32 characters")]
+        public List<string> Stack { get; set; }
 
 
         public Person()
         {
-            
+            Stack = new List<string>();
         }
 
-        public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
+        public Person(string nickname, string name, string email, DateTime birthday, List<string> stack)
         {
             Nickname = nickname;
             Name = name;

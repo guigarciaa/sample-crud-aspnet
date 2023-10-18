@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SampleCrud.Domain.Entities;
@@ -24,7 +25,7 @@ namespace SampleCrud.API.Controllers
             {
                 var persons = await _personService.GetPersons();
 
-                if (persons.Count() <= 0)
+                if (persons.Count() == 0)
                     return NotFound();
 
                 return Ok(persons);
@@ -36,6 +37,7 @@ namespace SampleCrud.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [EnableCors("AllowOrigin")]
         public async Task<ActionResult<Person>> Get(Guid id)
         {
             try
@@ -54,7 +56,7 @@ namespace SampleCrud.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Person> Post([FromBody] Person person)
+        public ActionResult<Person> Post([FromBody]Person person)
         {
             try
             {
@@ -95,7 +97,7 @@ namespace SampleCrud.API.Controllers
         {
             try
             {
-                if(id == Guid.Empty)
+                if (id == Guid.Empty)
                     return BadRequest("Person id is null.");
 
                 var personToDelete = await _personService.GetById(id);

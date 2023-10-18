@@ -26,9 +26,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
 
-// Capture metrics about all received HTTP requests.
 app.UseHttpMetrics();
 
 app.UseAuthorization();

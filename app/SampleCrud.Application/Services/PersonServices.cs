@@ -23,9 +23,9 @@ namespace SampleCrud.Application.Services
             {
                 return await _personRepository.GetById(id);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
