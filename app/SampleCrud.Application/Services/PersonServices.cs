@@ -14,6 +14,9 @@ namespace SampleCrud.Application.Services
 
         public void Add(Person person)
         {
+            if (!person.IsValid())
+                throw new Exception(person.ShowErrors());
+
             _personRepository.Add(person);
         }
 

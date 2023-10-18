@@ -34,22 +34,18 @@ namespace SampleCrud.Domain.Entities
 
         [
             Required(ErrorMessage = "Birthday is required"),
-            DataType(DataType.Date),
-            DisplayFormat(DataFormatString = "{dd-MM-yyyy}", ApplyFormatInEditMode = true)
         ]
 
-        public DateTime? Birthday { get; set; }
+        public DateOnly? Birthday { get; set; }
 
-        // [StringLength(32, ErrorMessage = "Stack must be max 32 characters")]
         public List<string> Stack { get; set; }
-
 
         public Person()
         {
             Stack = new List<string>();
         }
 
-        public Person(string nickname, string name, string email, DateTime birthday, List<string> stack)
+        public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
         {
             Nickname = nickname;
             Name = name;
@@ -62,6 +58,9 @@ namespace SampleCrud.Domain.Entities
                 throw new AggregateException(_errors.Select(x => new Exception(x)));
             }
         }
+
+
+
 
         public bool IsValid()
         {
@@ -112,6 +111,16 @@ namespace SampleCrud.Domain.Entities
             }
 
             return _errors.Count == 0;
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}, Nickname: {Nickname}, Name: {Name}, Email: {Email}, Birthday: {Birthday}, Stack: {Stack}";
+        }
+    
+        public string ShowErrors()
+        {
+            return _errors?.ToString() ?? "";
         }
     }
 }
