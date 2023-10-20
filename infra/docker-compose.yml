@@ -1,7 +1,7 @@
 version: '3.2'
 
 services:
-  sample_crud_app1:
+  sample_crud_app_web:
     image: ${DOCKER_REGISTRY-}app
     container_name: sample_crud
     build:
@@ -10,7 +10,7 @@ services:
     ports:
       - "5261:80"
     depends_on:
-      - db
+      - sample_crud_app_db
     restart: always
     networks:
       - host
@@ -23,7 +23,7 @@ services:
           cpus: '0.15'
           memory: '0.5GB'
       
-  db:
+  sample_crud_app_db:
     image: postgres
     restart: always
     ports:
@@ -42,7 +42,7 @@ services:
           cpus: '0.15'
           memory: '0.5GB'
 
-  prometheus:
+  sample_crud_app_prometheus:
     image: prom/prometheus
     container_name: prometheus
     ports:
@@ -59,20 +59,43 @@ services:
           cpus: '0.15'
           memory: '0.5GB'
 
-  grafana:
+  sample_crud_app_grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
     volumes:
-      - ./grafana/default.ini:/etc/grafana/grafana.ini
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/datasource:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
     depends_on:
-      - prometheus
+      - sample_crud_app_prometheus
     networks:
       - host
 
+  sample_crud_app_elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - host
+
+  sample_crud_app_kibana:
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - sample_crud_app_elasticsearch
+    networks:
+      - host
+          
 networks:
   host:
     driver: bridge
