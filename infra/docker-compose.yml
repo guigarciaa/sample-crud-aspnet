@@ -34,6 +34,8 @@ services:
       POSTGRES_DB: sample_crud_db
     volumes:
       - ./db/context.sql:/docker-entrypoint-initdb.d/context.sql
+    networks:
+      - host
     deploy:
       resources:
         limits:
