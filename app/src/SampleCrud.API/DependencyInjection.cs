@@ -7,7 +7,7 @@ using SampleCrud.Infra.Data;
 
 namespace SampleCrud.Infra.IoC
 {
-    public static class Startup
+    public static class DependencyInjection
     {
         public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
