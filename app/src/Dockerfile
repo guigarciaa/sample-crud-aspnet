@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /app
+WORKDIR /src
 
 # Copy all foldes, files inside SampleCrud/ and Paste in . inside of docker image.
 COPY . .
@@ -19,6 +19,6 @@ RUN dotnet publish -c Release -o /out --no-restore
 
 # Build runtime image.
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
+WORKDIR /src
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "SampleCrud.API.dll"]
