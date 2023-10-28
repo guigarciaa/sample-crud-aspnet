@@ -26,11 +26,12 @@ namespace SampleCrud.API.Controllers
 
                 if (persons.Count() == 0)
                     return NotFound();
-
+                _logger.LogInformation("Persons found: {0}", persons.Count());
                 return Ok(persons);
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }

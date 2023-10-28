@@ -2,7 +2,6 @@ using Prometheus;
 using SampleCrud.API;
 using SampleCrud.Infra.IoC;
 using Serilog;
-using Serilog.Events;
 using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,30 +11,27 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
 
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(
+            new ElasticsearchSinkOptions(new Uri(context.Configuration["ElasticConfiguration:Uri"]))
+            {
+
+                IndexFormat = $"{context.Configuration["ApplicationName"]?.ToLower()}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
+                AutoRegisterTemplate = true,
+                NumberOfReplicas = 1,
+                NumberOfShards = 1
+            })
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services);
+});
+
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck))
     .ForwardToPrometheus();
-
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration
-        .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-        .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-        .Enrich.FromLogContext();
-
-    var elasticUri = context.Configuration["ElasticConfiguration:Uri"];
-    if (!string.IsNullOrEmpty(elasticUri))
-    {
-        configuration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
-        {
-            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
-            AutoRegisterTemplate = true,
-            NumberOfReplicas = 2,
-            NumberOfShards = 2
-        });
-    }
-});
 
 var app = builder.Build();
 

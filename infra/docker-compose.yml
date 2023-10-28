@@ -1,29 +1,8 @@
 version: '3.2'
 
 services:
-  sample_crud_app_web:
-    image: ${DOCKER_REGISTRY-}app
-    container_name: sample_crud
-    build:
-        context: ../app
-        dockerfile: .
-    ports:
-      - "5261:80"
-    depends_on:
-      - sample_crud_app_db
-    restart: always
-    networks:
-      - host
-    environment: 
-        - DBHOST=database
-        - ASPNETCORE_ENVIRONMENT=Development
-    deploy:
-      resources:
-        limits:
-          cpus: '0.15'
-          memory: '0.5GB'
-      
   sample_crud_app_db:
+    container_name: postgres
     image: postgres
     restart: always
     ports:
@@ -43,8 +22,8 @@ services:
           memory: '0.5GB'
 
   sample_crud_app_prometheus:
-    image: prom/prometheus
     container_name: prometheus
+    image: prom/prometheus
     ports:
       - "9090:9090"
     volumes:
@@ -53,41 +32,43 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
       - host
-    deploy:
-      resources:
-        limits:
-          cpus: '0.15'
-          memory: '0.5GB'
 
   sample_crud_app_grafana:
-    image: grafana/grafana
     container_name: grafana
+    image: grafana/grafana
     ports:
       - "3000:3000"
     volumes:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana/provisioning/datasource:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
+      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
     depends_on:
       - sample_crud_app_prometheus
     networks:
       - host
 
   sample_crud_app_elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
     container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - node.name=elasticsearch
+      - cluster.name=docker-elasticsearch
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
     networks:
       - host
 
   sample_crud_app_kibana:
-    image: docker.elastic.co/kibana/kibana:8.7.1
     container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.7.1
     environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
       - "5601:5601"
@@ -95,7 +76,33 @@ services:
       - sample_crud_app_elasticsearch
     networks:
       - host
-          
+
+  sample_crud_app_web:
+    container_name: sample_crud
+    image: ${DOCKER_REGISTRY-}app
+    build:
+      context: ../app/src
+      dockerfile: .
+    ports:
+      - "5261:80"
+    depends_on:
+      - sample_crud_app_elasticsearch
+      - sample_crud_app_db
+    restart: always
+    networks:
+      - host
+    environment:
+      - DBHOST=database
+      - ASPNETCORE_ENVIRONMENT=Development
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.5GB'
+
 networks:
   host:
     driver: bridge
+
+volumes:
+  elasticsearch-data:
