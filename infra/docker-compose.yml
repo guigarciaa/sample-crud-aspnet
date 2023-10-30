@@ -42,8 +42,6 @@ services:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
-    depends_on:
-      - sample_crud_app_prometheus
     networks:
       - host
 
