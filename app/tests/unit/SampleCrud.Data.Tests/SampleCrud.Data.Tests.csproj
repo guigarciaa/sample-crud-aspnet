@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\app\SampleCrud.Data\SampleCrud.Data.csproj" />
+    <ProjectReference Include="..\..\..\src\SampleCrud.Data\SampleCrud.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

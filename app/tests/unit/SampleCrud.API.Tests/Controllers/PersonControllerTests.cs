@@ -56,7 +56,7 @@ public class PersonControllerTests
         var result = controller.Get().Result;
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<NotFoundObjectResult>(result.Result);
     }
 
     [Fact]

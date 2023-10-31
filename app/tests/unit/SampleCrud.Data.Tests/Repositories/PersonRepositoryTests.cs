@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SampleCrud.Data.Repositories;
 using SampleCrud.Domain.Entities;
@@ -8,11 +9,13 @@ namespace SampleCrud.Data.Tests.Repositories;
 
 public class PersonRepositoryTests
 {
-    private readonly Mock<ApplicationContext> _mockApplicationContext;
+    private readonly Mock<SampleCrudDbContext> _mockSampleCrudDbContext;
+    private readonly Mock<ILogger<PersonRepository>> _mockLogger;
 
     public PersonRepositoryTests()
     {
-        _mockApplicationContext = new Mock<ApplicationContext>();
+        _mockSampleCrudDbContext = new Mock<SampleCrudDbContext>();
+        _mockLogger = new Mock<ILogger<PersonRepository>>();
     }
 
     [Fact]
@@ -20,11 +23,11 @@ public class PersonRepositoryTests
     {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var persons = service.GetPersons();
 
         // Assert   
@@ -36,12 +39,12 @@ public class PersonRepositoryTests
     {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         // mockContext.Setup(m => m.Person.ToListAsync(It.IsAny<CancellationToken>())).Throws(new Exception());
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
 
         // Assert
         Assert.ThrowsAsync<Exception>(() => service.GetPersons());
@@ -52,7 +55,7 @@ public class PersonRepositoryTests
     {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         mockContext.Setup(m => m.Person.FindAsync(typeof(Guid), It.IsAny<Guid>())).ReturnsAsync(new Person
         {
@@ -62,7 +65,7 @@ public class PersonRepositoryTests
         });
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = await service.GetById(Guid.NewGuid());
 
         // Assert
@@ -74,12 +77,12 @@ public class PersonRepositoryTests
     {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         mockContext.Setup(m => m.Person.FindAsync(typeof(Guid), It.IsAny<Guid>())).Throws(new Exception());
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         
         // Assert
         Assert.ThrowsAsync<Exception>(() => service.GetById(Guid.NewGuid()));
@@ -90,11 +93,11 @@ public class PersonRepositoryTests
     {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -114,12 +117,12 @@ public class PersonRepositoryTests
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
 
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         mockContext.Setup(m => m.SaveChanges()).Throws(new Exception());
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -135,11 +138,11 @@ public class PersonRepositoryTests
     public void Should_Be_True_If_Update_a_Person_in_DBSet_Person() {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
 
         // Act
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -157,11 +160,11 @@ public class PersonRepositoryTests
     {
         var mockSet = new Mock<DbSet<Person>>();
 
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         mockContext.Setup(m => m.SaveChanges()).Throws(new Exception());
 
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -177,10 +180,10 @@ public class PersonRepositoryTests
     {
         var mockSet = new Mock<DbSet<Person>>();
 
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
 
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -198,11 +201,11 @@ public class PersonRepositoryTests
     {
         var mockSet = new Mock<DbSet<Person>>();
 
-        var mockContext = new Mock<ApplicationContext>();
+        var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
         mockContext.Setup(m => m.SaveChanges()).Throws(new Exception());
 
-        var service = new PersonRepository(mockContext.Object);
+        var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),

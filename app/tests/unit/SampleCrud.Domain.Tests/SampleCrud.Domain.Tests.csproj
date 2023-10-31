@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\app\SampleCrud.Domain\SampleCrud.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\SampleCrud.Domain\SampleCrud.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
