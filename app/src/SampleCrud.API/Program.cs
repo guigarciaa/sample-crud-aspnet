@@ -1,8 +1,6 @@
 using Prometheus;
 using SampleCrud.API;
 using SampleCrud.Infra.IoC;
-using Serilog;
-using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
