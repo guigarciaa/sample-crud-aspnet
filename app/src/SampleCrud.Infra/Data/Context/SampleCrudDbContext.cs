@@ -4,11 +4,11 @@ using SampleCrud.Domain.Entities;
 
 namespace SampleCrud.Infra.Data.Context
 {
-    public class ApplicationContext : DbContext
+    public class SampleCrudDbContext : DbContext
     {
-        public ApplicationContext() { }
+        public SampleCrudDbContext() { }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public SampleCrudDbContext(DbContextOptions<SampleCrudDbContext> options)
             : base(options) { }
 
         public virtual DbSet<Person> Person { get; set; }

@@ -10,9 +10,9 @@ namespace SampleCrud.Data.Repositories
     {
         private readonly ILogger<PersonRepository> _logger;
 
-        private readonly ApplicationContext _context;
+        private readonly SampleCrudDbContext _context;
 
-        public PersonRepository(ILogger<PersonRepository> logger, ApplicationContext context)
+        public PersonRepository(ILogger<PersonRepository> logger, SampleCrudDbContext context)
         {
             _logger = logger;
             _context = context;
