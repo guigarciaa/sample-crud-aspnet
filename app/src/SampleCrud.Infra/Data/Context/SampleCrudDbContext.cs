@@ -16,6 +16,20 @@ namespace SampleCrud.Infra.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Person>().ToTable("Person");
+            modelBuilder.Entity<User>().ToTable("User");
+
+            modelBuilder.Entity<User>()
+            .HasOne(e => e.PersonId)
+            .WithOne(e => e.UserId)
+            .HasForeignKey<Person>(e => e.Id)
+            .IsRequired();
+
+            modelBuilder.Entity<Person>()
+            .HasOne(e => e.UserId)
+            .WithOne(e => e.PersonId)
+            .HasForeignKey<User>(e => e.Id)
+            .IsRequired();
+
             base.OnModelCreating(modelBuilder);
         }
     }

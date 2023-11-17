@@ -1,8 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Globalization;
 using System.Text.Json.Serialization;
-using System.ComponentModel;
 
 namespace SampleCrud.Domain.Entities
 {
@@ -13,30 +10,26 @@ namespace SampleCrud.Domain.Entities
         [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [JsonIgnore]
+        public User UserId { get; set; }
+
         [
             Required(ErrorMessage = "Nickname is required"),
             StringLength(32, MinimumLength = 3, ErrorMessage = "Nickname must be between 3 and 32 characters")
         ]
-        public string? Nickname { get; set; }
+        public required string Nickname { get; set; }
 
         [
             Required(ErrorMessage = "Name is required"),
             StringLength(100, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 100 characters")
         ]
-        public string? Name { get; set; }
-
-
-        [
-            Required(ErrorMessage = "Email is required"),
-            EmailAddress(ErrorMessage = "Invalid email address")
-        ]
-        public string? Email { get; set; }
+        public required string Name { get; set; }
 
         [
             Required(ErrorMessage = "Birthday is required"),
         ]
 
-        public DateOnly? Birthday { get; set; }
+        public required DateOnly? Birthday { get; set; }
 
         public List<string> Stack { get; set; }
 
@@ -45,11 +38,10 @@ namespace SampleCrud.Domain.Entities
             Stack = new List<string>();
         }
 
-        public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
+        public Person(string nickname, string name, DateOnly birthday, List<string> stack)
         {
             Nickname = nickname;
             Name = name;
-            Email = email;
             Birthday = birthday;
             Stack = stack;
 
@@ -58,9 +50,6 @@ namespace SampleCrud.Domain.Entities
                 throw new AggregateException(_errors.Select(x => new Exception(x)));
             }
         }
-
-
-
 
         public bool IsValid()
         {
@@ -84,15 +73,15 @@ namespace SampleCrud.Domain.Entities
                 _errors.Add("Name must be between 3 and 100 characters");
             }
 
-            // Email Validations
-            if (string.IsNullOrEmpty(Email))
-            {
-                _errors.Add("Email is required");
-            }
-            if (Email != null && !new EmailAddressAttribute().IsValid(Email))
-            {
-                _errors.Add("Invalid email address");
-            }
+            // // Email Validations
+            // if (string.IsNullOrEmpty(Email))
+            // {
+            //     _errors.Add("Email is required");
+            // }
+            // if (Email != null && !new EmailAddressAttribute().IsValid(Email))
+            // {
+            //     _errors.Add("Invalid email address");
+            // }
 
             // Birthday Validations
             if (Birthday == null)
@@ -115,9 +104,9 @@ namespace SampleCrud.Domain.Entities
 
         public override string ToString()
         {
-            return $"Id: {Id}, Nickname: {Nickname}, Name: {Name}, Email: {Email}, Birthday: {Birthday}, Stack: {Stack}";
+            return $"Id: {Id}, Nickname: {Nickname}, Name: {Name}, Birthday: {Birthday}, Stack: {Stack}";
         }
-    
+
         public string ShowErrors()
         {
             return _errors?.ToString() ?? "";
