@@ -5,11 +5,11 @@ using SampleCrud.Domain.Services;
 
 namespace SampleCrud.Application.Services
 {
-    public class PersonServices : IPersonService
+    public class PersonService : IPersonService
     {
-        private readonly ILogger<PersonServices> _logger;
+        private readonly ILogger<PersonService> _logger;
         private readonly IPersonRepository _personRepository;
-        public PersonServices(ILogger<PersonServices> logger, IPersonRepository personRepository)
+        public PersonService(ILogger<PersonService> logger, IPersonRepository personRepository)
         {
             _logger = logger;
             _personRepository = personRepository;
