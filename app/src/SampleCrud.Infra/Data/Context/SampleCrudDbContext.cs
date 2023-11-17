@@ -20,14 +20,8 @@ namespace SampleCrud.Infra.Data.Context
 
             modelBuilder.Entity<User>()
             .HasOne(e => e.PersonId)
-            .WithOne(e => e.UserId)
+            .WithOne(e => e.User)
             .HasForeignKey<Person>(e => e.Id)
-            .IsRequired();
-
-            modelBuilder.Entity<Person>()
-            .HasOne(e => e.UserId)
-            .WithOne(e => e.PersonId)
-            .HasForeignKey<User>(e => e.Id)
             .IsRequired();
 
             base.OnModelCreating(modelBuilder);
