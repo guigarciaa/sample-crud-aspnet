@@ -11,7 +11,8 @@ namespace SampleCrud.Domain.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [JsonIgnore]
-        public User UserId { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
 
         [
             Required(ErrorMessage = "Nickname is required"),

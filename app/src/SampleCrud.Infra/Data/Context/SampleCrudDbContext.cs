@@ -4,6 +4,9 @@ using SampleCrud.Domain.Entities;
 
 namespace SampleCrud.Infra.Data.Context
 {
+    /// <summary>
+    /// Represents the database context for the SampleCrud application.
+    /// </summary>
     public class SampleCrudDbContext : DbContext
     {
         public SampleCrudDbContext() { }
@@ -12,6 +15,7 @@ namespace SampleCrud.Infra.Data.Context
             : base(options) { }
 
         public virtual DbSet<Person> Person { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

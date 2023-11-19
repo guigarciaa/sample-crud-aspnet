@@ -9,7 +9,7 @@ using SampleCrud.Domain.Services;
 using SampleCrud.Infra.Data;
 using SampleCrud.Infra.Extensions;
 
-namespace SampleCrud.Infra.IoC
+namespace SampleCrud.Infra.Injector
 {
     public static class DependencyInjection
     {
@@ -17,9 +17,12 @@ namespace SampleCrud.Infra.IoC
         {
             /* Add all DB dependencies here */
             services.AddInfraDatabase(configuration);
-            // Scopes
+            // Repositories
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            // Services
             services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         public static void AddLoggingInfrastructure(this IHostBuilder builder)
@@ -43,6 +46,9 @@ namespace SampleCrud.Infra.IoC
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey"))
                 };
             });
+
+            // Add a singleton for the JwtTokenService
+            services.AddSingleton<ITokenService, JwtTokenService>();
         }
     }
 }

@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbInfrastructure(builder.Configuration);
+builder.Services.AddAuthInfrastructure(builder.Configuration);
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck))
     .ForwardToPrometheus();
@@ -30,6 +31,7 @@ app.UseHttpsRedirection();
 
 app.UseHttpMetrics();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

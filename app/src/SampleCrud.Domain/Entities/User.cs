@@ -12,16 +12,19 @@ namespace SampleCrud.Domain.Entities
         [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [
-            Required(ErrorMessage = "Email is required"),
-            EmailAddress(ErrorMessage = "Invalid email address")
-        ]
-        public required string? Email { get; set; }
+        public string Email { get; set; }
 
-        public required string Password { get; set; }
+        public string Password { get; set; }
 
-        public required List<string> Roles { get; set; }
+        public string Roles { get; set; }
 
-        public Person PersonId { get; set; }
+        public Person? PersonId { get; set; }
+
+        public User(string email, string password, string roles)
+        {
+            Email = email;
+            Password = password;
+            Roles = roles;
+        }
     }
 }
