@@ -1,4 +1,4 @@
-using SampleCrud.Domain.Entities;
+using SampleCrud.Domain.DTO;
 
 namespace SampleCrud.Domain.Services
 {
@@ -12,6 +12,6 @@ namespace SampleCrud.Domain.Services
         /// </summary>
         /// <param name="user">The user for whom the token is generated.</param>
         /// <returns>The generated JWT token.</returns>
-        string GenerateJwtToken(User user);
+        string GenerateJwtToken(UserDTO user);
     }
 }

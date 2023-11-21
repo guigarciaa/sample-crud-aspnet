@@ -19,10 +19,8 @@ namespace SampleCrud.Infra.Injector
             services.AddInfraDatabase(configuration);
             // Repositories
             services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
             // Services
             services.AddScoped<IPersonService, PersonService>();
-            services.AddScoped<IUserService, UserService>();
         }
 
         public static void AddLoggingInfrastructure(this IHostBuilder builder)

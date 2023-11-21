@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using SampleCrud.Domain.DTO;
 using SampleCrud.Domain.Entities;
 using SampleCrud.Domain.Services;
 
@@ -17,7 +18,7 @@ namespace SampleCrud.Application.Services
         /// </summary>
         /// <param name="user">The user for whom the token is generated.</param>
         /// <returns>The generated JWT token.</returns>
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken(UserDTO user)
         {
             var claims = new[]
             {
