@@ -1,6 +1,6 @@
 using Prometheus;
 using SampleCrud.API;
-using SampleCrud.Infra.IoC;
+using SampleCrud.Infra.Injector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbInfrastructure(builder.Configuration);
-builder.Services.AddAuthInfrastructure(builder.Configuration);
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck))
     .ForwardToPrometheus();
@@ -31,7 +30,6 @@ app.UseHttpsRedirection();
 
 app.UseHttpMetrics();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
