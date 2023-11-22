@@ -87,11 +87,12 @@ services:
       - sample_crud_app_elasticsearch
       - sample_crud_app_db
     restart: always
+    environment:
+      - DBHOST=Server=sample_crud_app_db;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
+      - ELASTICSEARCH_URL=http://elasticsearch:9200/
+      - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - host
-    environment:
-      - DBHOST=database
-      - ASPNETCORE_ENVIRONMENT=Development
     deploy:
       resources:
         limits:
