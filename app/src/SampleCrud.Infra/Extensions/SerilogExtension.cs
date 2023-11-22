@@ -12,7 +12,7 @@ namespace SampleCrud.Infra.Extensions
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
                     .WriteTo.Elasticsearch(
-                        new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(context.Configuration["ElasticConfiguration:Uri"]))
+                        new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(context.Configuration["ELASTICSEARCH_URL"]))
                         {
 
                             IndexFormat = $"{context.Configuration["ApplicationName"]?.ToLower()}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",

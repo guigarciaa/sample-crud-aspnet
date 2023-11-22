@@ -10,7 +10,7 @@ namespace SampleCrud.Infra.Data
         public static void AddInfraDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<SampleCrudDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("Database")));
+                options.UseNpgsql(configuration["DBHOST"]));
         }
     }
 }

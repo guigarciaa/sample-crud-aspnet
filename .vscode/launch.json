@@ -18,7 +18,9 @@
                 "pattern": "\\Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DBHOST": "Server=localhost;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres",
+                "ELASTICSEARCH_URL":"http://elasticsearch:9200/"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
