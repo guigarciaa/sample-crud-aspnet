@@ -15,7 +15,7 @@ scrape_configs:
     static_configs:
       - targets: ["prometheus:9090"]
 
-  - job_name: 'sample_crud_app1'
+  - job_name: 'sample_crud_app_web'
     scrape_interval: 5s
     static_configs:
-      - targets: ["sample_crud_app1:80"]
+      - targets: ["sample_crud"]

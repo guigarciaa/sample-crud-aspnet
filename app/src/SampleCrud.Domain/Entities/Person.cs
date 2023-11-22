@@ -57,8 +57,6 @@ namespace SampleCrud.Domain.Entities
         }
 
 
-
-
         public bool IsValid()
         {
             // Nickname Validations
