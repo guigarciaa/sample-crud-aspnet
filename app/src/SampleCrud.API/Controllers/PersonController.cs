@@ -81,8 +81,9 @@ namespace SampleCrud.API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error adding person in controller! Data: {person} Error: {e}");
-                return BadRequest(e.Message);
+                _logger.LogError($"Error adding person! Data: {person} {e}");
+                person.Id = Guid.Empty;
+                return BadRequest($"Error adding person! Data: {person} {e.Message}");
             }
         }
 

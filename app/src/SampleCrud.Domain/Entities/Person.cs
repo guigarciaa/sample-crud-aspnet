@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace SampleCrud.Domain.Entities
 {
@@ -32,7 +33,6 @@ namespace SampleCrud.Domain.Entities
         [
             Required(ErrorMessage = "Birthday is required"),
         ]
-
         public DateOnly? Birthday { get; set; }
 
         public List<string> Stack { get; set; }
@@ -59,7 +59,8 @@ namespace SampleCrud.Domain.Entities
 
         public bool IsValid()
         {
-            // Nickname Validations
+            #region Nickname Validations
+
             if (string.IsNullOrEmpty(Nickname))
             {
                 _errors.Add("Nickname is required");
@@ -69,7 +70,10 @@ namespace SampleCrud.Domain.Entities
                 _errors.Add("Nickname must be between 3 and 32 characters");
             }
 
-            // Name Validations
+            #endregion
+
+            #region Name Validations
+
             if (string.IsNullOrEmpty(Name))
             {
                 _errors.Add("Name is required");
@@ -78,8 +82,17 @@ namespace SampleCrud.Domain.Entities
             {
                 _errors.Add("Name must be between 3 and 100 characters");
             }
+            var regex = new Regex(@"(.*)String|string|test|teste|null|nill|undefined*\w+");
+            var isString = regex.IsMatch(Name ?? "");
+            if (isString)
+            {
+                _errors.Add("Name not must be a word of list [String, string, test, teste, null, nil, undefined]");
+            }
 
-            // Email Validations
+            #endregion
+
+            #region Email Validations
+
             if (string.IsNullOrEmpty(Email))
             {
                 _errors.Add("Email is required");
@@ -89,13 +102,23 @@ namespace SampleCrud.Domain.Entities
                 _errors.Add("Invalid email address");
             }
 
-            // Birthday Validations
+            #endregion
+
+            #region Birthday Validations
+
             if (Birthday == null)
             {
                 _errors.Add("Birthday is required");
             }
+            if (Birthday != null && Birthday.Value > DateOnly.FromDateTime(DateTime.Now))
+            {
+                _errors.Add("Birthday must be less than or equal to the current date");
+            }
 
-            // Stack Validations
+            #endregion
+
+            #region Stack Validations
+
             if (Stack != null && Stack.Count > 0)
             {
                 var verifyLengthEnchStack = Stack.Exists(x => x.Length > 32);
@@ -104,6 +127,8 @@ namespace SampleCrud.Domain.Entities
                     _errors.Add("Stack must be max 32 characters");
                 }
             }
+
+            #endregion
 
             return _errors.Count == 0;
         }
@@ -115,7 +140,7 @@ namespace SampleCrud.Domain.Entities
 
         public string ShowErrors()
         {
-            return _errors?.ToString() ?? "";
+            return string.Join(Environment.NewLine, _errors);
         }
     }
 }

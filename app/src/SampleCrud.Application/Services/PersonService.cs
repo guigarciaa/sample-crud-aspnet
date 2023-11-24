@@ -47,7 +47,7 @@ namespace SampleCrud.Application.Services
             catch (Exception e)
             {
                 _logger.LogError($"Data: {person} Error: {e}");
-                throw new Exception("Error adding person!") ;
+                throw new Exception($"Errors: {e.Message}") ;
             }
         }
 
