@@ -75,12 +75,12 @@ services:
     networks:
       - host
 
-  sample_crud_app_web:
+  samplecrudapi:
     container_name: sample_crud
-    image: ${DOCKER_REGISTRY-}app
+    image: samplecrudapi
     build:
-      context: ../app/src
-      dockerfile: .
+      context: .
+      dockerfile: app/src/SampleCrud.API/Dockerfile
     ports:
       - "5261:80"
     depends_on:
@@ -90,7 +90,7 @@ services:
     environment:
       - DBHOST=Server=sample_crud_app_db;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
     networks:
       - host
     deploy:
