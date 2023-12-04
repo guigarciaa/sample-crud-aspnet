@@ -10,6 +10,11 @@ The code is organized into separate controllers for each entity, with correspond
 The controllers use Entity Framework Core to interact with the database, and the code is designed to be easily extendable
 to support additional entities and operations as needed.
 
+<!-- ![Architecture](./docs/sample_crud_api.drawio.svg) -->
+
+<p align="center" width="100%">
+    <img width="33%" src="./docs/sample_crud_api.drawio.svg">
+</p>
 
 # Running this project
 ```bash
