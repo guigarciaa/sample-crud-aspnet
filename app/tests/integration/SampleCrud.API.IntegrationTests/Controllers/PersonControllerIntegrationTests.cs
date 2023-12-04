@@ -26,4 +26,20 @@ public class PersonControllerIntegrationTests : IClassFixture<WebApplicationFact
         Assert.Equal("text/html; charset=utf-8",
             response.Content.Headers.ContentType.ToString());
     }
+
+    [Theory]
+    [InlineData("/api/person")]
+    public async Task Post_EndpointsReturnSuccessAndCorrectContentType(string url)
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var response = await client.PostAsync(url, null);
+
+        // Assert
+        response.EnsureSuccessStatusCode(); // Status Code 200-299
+        Assert.Equal("text/html; charset=utf-8",
+            response.Content.Headers.ContentType.ToString());
+    }
 }
