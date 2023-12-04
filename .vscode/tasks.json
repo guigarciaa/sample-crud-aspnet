@@ -46,7 +46,7 @@
             "dockerBuild": {
                 "tag": "samplecrudaspnet:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/app/src/SampleCrud.API/Dockerfile",
+                "dockerfile": "${workspaceFolder}/app/src/Dockerfile",
                 "context": "${workspaceFolder}/infra",
                 "pull": true
             },
@@ -62,7 +62,7 @@
             ],
             "dockerBuild": {
                 "tag": "samplecrudaspnet:latest",
-                "dockerfile": "${workspaceFolder}/app/src/SampleCrud.API/Dockerfile",
+                "dockerfile": "${workspaceFolder}/app/src/Dockerfile",
                 "context": "${workspaceFolder}/infra",
                 "platform": {
                     "os": "linux",

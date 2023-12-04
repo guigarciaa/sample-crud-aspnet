@@ -7,7 +7,7 @@ services:
     image: samplecrudapi
     build:
       context: .
-      dockerfile: app/src/SampleCrud.API/Dockerfile
+      dockerfile: app/src/Dockerfile
       args:
         - configuration=Debug
     ports:

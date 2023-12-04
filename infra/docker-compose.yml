@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.4'
 
 services:
   sample_crud_app_db:
@@ -79,8 +79,8 @@ services:
     container_name: sample_crud
     image: samplecrudapi
     build:
-      context: .
-      dockerfile: app/src/SampleCrud.API/Dockerfile
+      context: ../app/src
+      dockerfile: .
     ports:
       - "5261:80"
     depends_on:
