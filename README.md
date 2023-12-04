@@ -13,7 +13,7 @@ to support additional entities and operations as needed.
 <!-- ![Architecture](./docs/sample_crud_api.drawio.svg) -->
 
 <p align="center" width="100%">
-    <img width="33%" src="./docs/sample_crud_api.drawio.svg">
+    <img width="33%" src="./docs/sample_crud_api.svg">
 </p>
 
 # Running this project
