@@ -21,70 +21,72 @@ services:
           cpus: '0.15'
           memory: '0.5GB'
 
-  sample_crud_app_prometheus:
-    container_name: prometheus
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    networks:
-      - host
+  # sample_crud_app_prometheus:
+  #   container_name: prometheus
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #   networks:
+  #     - host
 
-  sample_crud_app_grafana:
-    container_name: grafana
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
-    networks:
-      - host
+  # sample_crud_app_grafana:
+  #   container_name: grafana
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+  #     - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
+  #     - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
+  #   networks:
+  #     - host
 
-  sample_crud_app_elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - bootstrap.memory_lock=true
-      - node.name=elasticsearch
-      - cluster.name=docker-elasticsearch
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - host
+  # sample_crud_app_elasticsearch:
+  #   container_name: elasticsearch
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - bootstrap.memory_lock=true
+  #     - node.name=elasticsearch
+  #     - cluster.name=docker-elasticsearch
+  #   volumes:
+  #     - elasticsearch-data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - "9200:9200"
+  #   networks:
+  #     - host
 
-  sample_crud_app_kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.7.1
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - sample_crud_app_elasticsearch
-    networks:
-      - host
+  # sample_crud_app_kibana:
+  #   container_name: kibana
+  #   image: docker.elastic.co/kibana/kibana:8.7.1
+  #   environment:
+  #     - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - sample_crud_app_elasticsearch
+  #   networks:
+  #     - host
 
-  samplecrudapi:
-    container_name: sample_crud
+  samplecrudapi_01: &samplecrudapi
+    container_name: samplecrudapi_01
     image: samplecrudapi
     build:
       context: ../app/src
       dockerfile: .
     ports:
       - "5261:80"
+    expose:
+      - "80"
     depends_on:
-      - sample_crud_app_elasticsearch
+      # - sample_crud_app_elasticsearch
       - sample_crud_app_db
     restart: always
     environment:
@@ -97,6 +99,30 @@ services:
       resources:
         limits:
           cpus: '0.15'
+          memory: '0.5GB'
+
+  samplecrudapi_02:
+    <<: *samplecrudapi
+    container_name: samplecrudapi_02
+    ports:
+      - "5262:80"
+
+  sample_crud_app_nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - samplecrudapi_01
+      - samplecrudapi_02
+    ports:
+      - "9999:9999"
+    networks:
+      - host
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
           memory: '0.5GB'
 
 networks:
