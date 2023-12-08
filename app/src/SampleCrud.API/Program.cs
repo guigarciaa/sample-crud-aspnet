@@ -1,6 +1,7 @@
 using Prometheus;
 using SampleCrud.API;
 using SampleCrud.Infra.Injector;
+using SampleCrud.Infra.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,12 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbInfrastructure(builder.Configuration);
 
+builder.Host.AddSerilogLogging(builder.Configuration);
+
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck))
     .ForwardToPrometheus();
 
-
-builder.Host.AddLoggingInfrastructure();
 
 var app = builder.Build();
 

@@ -3,44 +3,44 @@
 version: '3.4'
 
 services:
-  sample_crud_app_elasticsearch_debug:
+  elasticsearch:
     container_name: elasticsearch_debug
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - host
     environment:
+      - cluster.name=docker-cluster
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - bootstrap.memory_lock=true
-      - node.name=elasticsearch
-      - cluster.name=docker-elasticsearch
     volumes:
       - elasticsearch-debug-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - host
 
-  sample_crud_app_kibana_debuger:
+  kibana:
     container_name: kibana_debug
     image: docker.elastic.co/kibana/kibana:8.7.1
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch_debug:9200
-      - ELASTICSEARCH_HOSTS=http://elasticsearch_debug:9200
-    volumes:
-      - elasticsearch-debug-data:/usr/share/kibana/data
     ports:
       - "5601:5601"
-    depends_on:
-      - sample_crud_app_elasticsearch_debug
     networks:
       - host
+    depends_on:
+      - elasticsearch
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+    volumes:
+      - elasticsearch-debug-data:/usr/share/kibana/data
 
-  sample_crud_app_db_debug:
+  postgres:
     container_name: postgres_debug
     image: postgres
     restart: always
     ports:
       - "5433:5432"
+    # networks:
+    #   - host
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: admin
@@ -48,13 +48,10 @@ services:
     volumes:
       - ../../infra/db/context.sql:/docker-entrypoint-initdb.d/context.sql
       - elasticsearch-debug-data:/usr/share/postgres/data
-    networks:
-      - host
 
+volumes:
+  elasticsearch-debug-data:
 
 networks:
   host:
     driver: bridge
-
-volumes:
-  elasticsearch-debug-data:
