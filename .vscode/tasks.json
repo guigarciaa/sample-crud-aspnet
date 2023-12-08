@@ -1,101 +1,73 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/app/src/SampleCrud.sln",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/app/src/SampleCrud.sln",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/app/src/SampleCrud.sln"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "type": "docker-build",
-            "label": "docker-build: debug",
-            "dependsOn": [
-                "build"
-            ],
-            "dockerBuild": {
-                "tag": "samplecrudaspnet:dev",
-                "target": "base",
-                "dockerfile": "${workspaceFolder}/app/src/Dockerfile",
-                "context": "${workspaceFolder}/infra",
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj"
-            }
-        },
-        {
-            "type": "docker-build",
-            "label": "docker-build: release",
-            "dependsOn": [
-                "build"
-            ],
-            "dockerBuild": {
-                "tag": "samplecrudaspnet:latest",
-                "dockerfile": "${workspaceFolder}/app/src/Dockerfile",
-                "context": "${workspaceFolder}/infra",
-                "platform": {
-                    "os": "linux",
-                    "architecture": "amd64"
-                },
-                "pull": true
-            },
-            "netCore": {
-                "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj"
-            }
-        },
-        {
-            "type": "docker-run",
-            "label": "docker-run: debug",
-            "dependsOn": [
-                "docker-build: debug"
-            ],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj",
-                "enableDebugging": true
-            }
-        },
-        {
-            "type": "docker-run",
-            "label": "docker-run: release",
-            "dependsOn": [
-                "docker-build: release"
-            ],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj"
-            }
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/app/src/SampleCrud.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/app/src/SampleCrud.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/app/src/SampleCrud.sln"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "type": "docker-build",
+      "label": "docker-build: debug",
+      "dependsOn": ["build"],
+      "dockerBuild": {
+        "tag": "samplecrudaspnet:dev",
+        "target": "base",
+        "dockerfile": "${workspaceFolder}/app/src/Dockerfile",
+        "context": "${workspaceFolder}/app/src",
+        "pull": true
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj",
+        "enableDebugging": true
+      },
+    },
+    {
+      "type": "docker-run",
+      "label": "docker-run: debug",
+      "dependsOn": ["docker-build: debug"],
+      "dockerRun": {
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "DBHOST": "teste",
+          "ELASTICSEARCH_URL": "http://localhost:9200",
         }
-    ]
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/app/src/SampleCrud.API/SampleCrud.API.csproj",
+        "enableDebugging": true
+      }
+    }
+  ]
 }
