@@ -86,7 +86,7 @@ services:
     expose:
       - "80"
     depends_on:
-      # - sample_crud_app_elasticsearch
+      - sample_crud_app_elasticsearch
       - sample_crud_app_db
     restart: always
     environment:
