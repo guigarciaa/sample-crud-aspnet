@@ -29,5 +29,3 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 CMD dockerize -wait tcp://elasticsearch:9200 -timeout 1m && dotnet ./SampleCrud.API.dll
-
-# ENTRYPOINT ["dotnet", "SampleCrud.API.dll"]
