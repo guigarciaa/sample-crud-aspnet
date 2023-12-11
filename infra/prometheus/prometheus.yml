@@ -18,4 +18,4 @@ scrape_configs:
   - job_name: 'sample_crud_app_web'
     scrape_interval: 5s
     static_configs:
-      - targets: ["sample_crud"]
+      - targets: ["samplecrudapi_01", "samplecrudapi_02"]

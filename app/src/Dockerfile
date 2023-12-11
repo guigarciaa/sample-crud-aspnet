@@ -1,33 +1,31 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-EXPOSE 5050
+EXPOSE 80
 
-# ENV ASPNETCORE_URLS=http://+:5050
+RUN apt-get update && apt-get install -y wget
+ENV DOCKERIZE_VERSION v0.7.0
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG configuration=Release
 WORKDIR /src
-# COPY ["src/SampleCrud.API/SampleCrud.API.csproj", "app/src/SampleCrud.API/"]
-# RUN dotnet restore "app/src/SampleCrud.API/SampleCrud.API.csproj"
+COPY . ./app/src/
+RUN dotnet restore "app/src/SampleCrud.API/SampleCrud.API.csproj"
 COPY . .
-# WORKDIR "/src/app/src/SampleCrud.API"
-RUN dotnet restore "SampleCrud.Application/SampleCrud.Application.csproj"
-RUN dotnet restore "SampleCrud.Domain/SampleCrud.Domain.csproj"
-RUN dotnet restore "SampleCrud.Data/SampleCrud.Data.csproj"
-RUN dotnet restore "SampleCrud.Infra/SampleCrud.Infra.csproj"
-RUN dotnet restore "SampleCrud.API/SampleCrud.API.csproj"
-RUN dotnet build -c $configuration -o /app/build
+WORKDIR "/src/app/src/SampleCrud.API"
+RUN dotnet build "SampleCrud.API.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
 ARG configuration=Release
-RUN dotnet publish -c $configuration -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "SampleCrud.API.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SampleCrud.API.dll"]
+
+CMD dockerize -wait tcp://elasticsearch:9200 -timeout 1m && dotnet ./SampleCrud.API.dll
