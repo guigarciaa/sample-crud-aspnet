@@ -1,6 +1,22 @@
 version: '3.4'
 
 services:
+  elasticsearch:
+    container_name: sample_crud_app_elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - host
+    environment:
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - samplecrudaspnet-data:/usr/share/elasticsearch/data
+
   postgres:
     container_name: sample_crud_app_postgres
     image: postgres
@@ -12,7 +28,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_DB: sample_crud_db
     volumes:
-      - ./db/context.sql:/docker-entrypoint-initdb.d/context.sql
+      - ./postgres/context.sql:/docker-entrypoint-initdb.d/context.sql
       - samplecrudaspnet-data:/usr/share/postgres/data
     networks:
       - host
@@ -48,22 +64,6 @@ services:
     networks:
       - host
 
-  elasticsearch:
-    container_name: sample_crud_app_elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - host
-    environment:
-      - cluster.name=docker-cluster
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - samplecrudaspnet-data:/usr/share/elasticsearch/data
-
   kibana:
     container_name: sample_crud_app_kibana
     image: docker.elastic.co/kibana/kibana:8.7.1
@@ -91,11 +91,11 @@ services:
     depends_on:
       - elasticsearch
       - postgres
-    restart: always
+    restart: on-failure:10
     environment:
-      - DBHOST=Server=sample_crud_app_db;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
+      - DBHOST=Server=sample_crud_app_postgres;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
-      - ASPNETCORE_ENVIRONMENT=Release
+      - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - samplecrudaspnet-data:/usr/share/samplecrudapi/data
     networks:
