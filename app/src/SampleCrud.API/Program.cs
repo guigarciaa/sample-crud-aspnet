@@ -2,7 +2,7 @@ using Prometheus;
 using SampleCrud.API;
 using SampleCrud.Infra.Injector;
 using SampleCrud.Infra.Utils;
-using Serilog;
+// using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging();
+// app.UseSerilogRequestLogging();
 
 app.UseHttpMetrics();
 
