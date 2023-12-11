@@ -29,9 +29,17 @@ services:
       POSTGRES_DB: sample_crud_db
     volumes:
       - ./postgres/context.sql:/docker-entrypoint-initdb.d/context.sql
+      - ./postgres//postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
       - samplecrudaspnet-data:/usr/share/postgres/data
+    command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
     networks:
       - host
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
     deploy:
       resources:
         limits:
