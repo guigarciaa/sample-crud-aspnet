@@ -46,7 +46,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_DB: sample_crud_db
     volumes:
-      - ../../infra/db/context.sql:/docker-entrypoint-initdb.d/context.sql
+      - ../../infra/postgres/context.sql:/docker-entrypoint-initdb.d/context.sql
       - elasticsearch-debug-data:/usr/share/postgres/data
 
 volumes:

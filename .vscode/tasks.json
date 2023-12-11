@@ -60,7 +60,7 @@
       "dockerRun": {
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development",
-          "DBHOST": "teste",
+          "DBHOST": "Server=sample_crud_app_db;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres",
           "ELASTICSEARCH_URL": "http://localhost:9200",
         }
       },
