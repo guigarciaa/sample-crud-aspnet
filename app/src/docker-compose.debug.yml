@@ -3,44 +3,14 @@
 version: '3.4'
 
 services:
-  elasticsearch:
-    container_name: elasticsearch_debug
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - host
-    environment:
-      - cluster.name=docker-cluster
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - elasticsearch-debug-data:/usr/share/elasticsearch/data
-
-  kibana:
-    container_name: kibana_debug
-    image: docker.elastic.co/kibana/kibana:8.7.1
-    ports:
-      - "5601:5601"
-    networks:
-      - host
-    depends_on:
-      - elasticsearch
-    environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-    volumes:
-      - elasticsearch-debug-data:/usr/share/kibana/data
-
   postgres:
-    container_name: postgres_debug
+    container_name: sample_crud_app_postgres_debug
     image: postgres
     restart: always
     ports:
       - "5433:5432"
-    # networks:
-    #   - host
+    networks:
+      - host
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: admin
@@ -48,6 +18,16 @@ services:
     volumes:
       - ../../infra/postgres/context.sql:/docker-entrypoint-initdb.d/context.sql
       - elasticsearch-debug-data:/usr/share/postgres/data
+
+  redis:
+    container_name: sample_crud_app_redis_debug
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - host
+    volumes:
+      - samplecrudaspnet-data:/usr/share/redis/data
 
 volumes:
   elasticsearch-debug-data:
