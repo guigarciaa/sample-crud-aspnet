@@ -18,8 +18,6 @@ namespace SampleCrud.Infra.Injector
             // Services
             services.AddScoped<IPersonService, PersonService>();
 
-            // services.AddSerilogLogging(configuration);
-
             return services;
         }
     }
