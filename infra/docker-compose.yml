@@ -17,6 +17,46 @@ services:
     volumes:
       - samplecrudaspnet-data:/usr/share/elasticsearch/data
 
+  kibana:
+    container_name: sample_crud_app_kibana
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    ports:
+      - "5601:5601"
+    networks:
+      - host
+    depends_on:
+      - elasticsearch
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+    volumes:
+      - samplecrudaspnet-data:/usr/share/kibana/data
+
+  prometheus:
+    container_name: sample_crud_app_prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - samplecrudaspnet-data:/usr/share/prometheus/data
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - host
+
+  grafana:
+    container_name: sample_crud_app_grafana
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
+      - samplecrudaspnet-data:/usr/share/grafana/data
+    networks:
+      - host
+
   postgres:
     container_name: sample_crud_app_postgres
     image: postgres
@@ -46,45 +86,20 @@ services:
           cpus: '0.15'
           memory: '0.5GB'
 
-  prometheus:
-    container_name: sample_crud_app_prometheus
-    image: prom/prometheus
+  redis:
+    container_name: sample_crud_app_redis
+    image: redis
     ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - samplecrudaspnet-data:/usr/share/prometheus/data
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - "6379:6379"
     networks:
       - host
-
-  grafana:
-    container_name: sample_crud_app_grafana
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
     volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
-      - samplecrudaspnet-data:/usr/share/grafana/data
-    networks:
-      - host
-
-  kibana:
-    container_name: sample_crud_app_kibana
-    image: docker.elastic.co/kibana/kibana:8.7.1
-    ports:
-      - "5601:5601"
-    networks:
-      - host
-    depends_on:
-      - elasticsearch
-    environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-    volumes:
-      - samplecrudaspnet-data:/usr/share/kibana/data
+      - samplecrudaspnet-data:/usr/share/redis/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.15'
+          memory: '0.5GB'
 
   samplecrudapi_01: &samplecrudapi
     container_name: samplecrudapi_01
