@@ -17,20 +17,20 @@ services:
       POSTGRES_DB: sample_crud_db
     volumes:
       - ../../infra/postgres/context.sql:/docker-entrypoint-initdb.d/context.sql
-      - elasticsearch-debug-data:/usr/share/postgres/data
+      - samplecrudaspnet-debug-data:/usr/share/postgres/data
 
   redis:
     container_name: sample_crud_app_redis_debug
-    image: redis
+    image: redis:latest
     ports:
       - "6379:6379"
     networks:
       - host
     volumes:
-      - samplecrudaspnet-data:/usr/share/redis/data
+      - samplecrudaspnet-debug-data:/usr/share/redis/data
 
 volumes:
-  elasticsearch-debug-data:
+  samplecrudaspnet-debug-data:
 
 networks:
   host:
