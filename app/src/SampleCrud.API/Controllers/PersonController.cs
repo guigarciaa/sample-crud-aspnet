@@ -62,7 +62,7 @@ namespace SampleCrud.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Person> Post([FromBody] Person person)
+        public async Task<ActionResult<Person>> Post([FromBody] Person person)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace SampleCrud.API.Controllers
                     return BadRequest(ModelState.ValidationState);
 
                 _logger.LogInformation($"Adding person: {person}");
-                _personService.Add(person);
+                await _personService.Add(person);
                 _logger.LogInformation($"Person added: {person}");
                 return CreatedAtAction(nameof(Get), new { id = person.Id }, person);
             }
@@ -81,7 +81,7 @@ namespace SampleCrud.API.Controllers
             {
                 _logger.LogError($"Error adding person! Data: {person} {e}");
                 person.Id = Guid.Empty;
-                return BadRequest($"Error adding person! Data: {person} {e.Message}");
+                return BadRequest($"Error adding person! Data: {person}");
             }
         }
 

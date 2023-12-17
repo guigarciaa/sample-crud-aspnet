@@ -28,4 +28,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-CMD dockerize -wait tcp://elasticsearch:9200 -timeout 1m && dotnet ./SampleCrud.API.dll
+CMD dockerize -wait tcp://redis:6379 -wait tcp://elasticsearch:9200 -timeout 1m && dotnet ./SampleCrud.API.dll

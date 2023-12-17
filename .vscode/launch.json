@@ -27,7 +27,8 @@
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DBHOST": "Server=sample_crud_app_db;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres",
-        "ELASTICSEARCH_URL": "http://localhost:9200"
+        "ELASTICSEARCH_URL": "http://localhost:9200", 
+        "REDIS": "localhost:6379, abortConnect=false"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"

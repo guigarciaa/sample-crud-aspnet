@@ -26,6 +26,6 @@ export default () => {
   };
   http.post(url, body, params);
   sleep(1);
-  http.get(url);
-  sleep(1);
+  // http.get(url);
+  // sleep(1);
 };

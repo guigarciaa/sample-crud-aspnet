@@ -9,13 +9,13 @@ namespace SampleCrud.API.Workers
 {
     public class InsertWorker : IHostedService
     {
-        private readonly IPersonService _personService;
         private readonly ILogger<InsertWorker> _logger; 
+        private readonly IPersonService _personService;
 
-        public InsertWorker(IPersonService personService, ILogger<InsertWorker> logger)
+        public InsertWorker(ILogger<InsertWorker> logger, IPersonService personService)
         {
-            _personService = personService;
             _logger = logger;
+            _personService = personService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

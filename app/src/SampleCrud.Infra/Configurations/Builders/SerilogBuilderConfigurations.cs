@@ -5,7 +5,7 @@ using Serilog;
 
 namespace SampleCrud.Infra.Utils
 {
-    public static class LoggingInstaller
+    public static class SerilogBuilderConfigurations
     {
         public static IHostBuilder AddSerilogLogging(this IHostBuilder host, IConfiguration configuration)
         {

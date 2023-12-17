@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using SampleCrud.Domain.Cache;
 using SampleCrud.Domain.Entities;
 using SampleCrud.Domain.Repositories;
 using SampleCrud.Domain.Services;
@@ -14,14 +15,15 @@ namespace SampleCrud.Application.Services
 
         private readonly ILogger<PersonService> _logger;
         private readonly IPersonRepository _personRepository;
-
+        private readonly ICacheService _cacheRepository;
         #endregion
 
         #region Constructor
-        public PersonService(ILogger<PersonService> logger, IPersonRepository personRepository)
+        public PersonService(ILogger<PersonService> logger, IPersonRepository personRepository, ICacheService cacheRepository)
         {
             _logger = logger;
             _personRepository = personRepository;
+            _cacheRepository = cacheRepository;
         }
         #endregion
 
@@ -31,23 +33,24 @@ namespace SampleCrud.Application.Services
         /// </summary>
         /// <param name="person">The person to be added.</param>
         /// <exception cref="Exception">Thrown when the person is not valid or an error occurs while adding the person.</exception>
-        public void Add(Person person)
+        public async Task Add(Person person)
         {
             try
             {
                 _logger.LogInformation($"Adding person: {person}");
-                if (!person.IsValid()) {
+                if (!person.IsValid())
+                {
                     _logger.LogError($"Person is not valid: {person}, {person.ShowErrors()}");
                     throw new Exception(person.ShowErrors());
                 }
-
-                _personRepository.Add(person);
+                // Add person to cache
+                await _cacheRepository.Set(person.Id.ToString(), person);
                 _logger.LogInformation($"Person added: {person}");
             }
             catch (Exception e)
             {
                 _logger.LogError($"Data: {person} Error: {e}");
-                throw new Exception($"Errors: {e.Message}") ;
+                throw new Exception($"Errors: {e.Message}");
             }
         }
 
@@ -61,14 +64,20 @@ namespace SampleCrud.Application.Services
             try
             {
                 _logger.LogInformation($"Getting person by id: {id}");
-                var result = await _personRepository.GetById(id);
-                _logger.LogInformation($"Person found: {result}");
-                return result;
+                var _personCache = await _cacheRepository.Get<Person>(id.ToString());
+                if (_personCache != null)
+                {
+                    _logger.LogInformation($"Person found in cache: {_personCache}");
+                    return _personCache;
+                }
+                var _person = await _personRepository.GetById(id);
+                _logger.LogInformation($"Person found: {_person}");
+                return _person;
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error gettting person in service! Data: {id} Error: {e}");  
-                throw new Exception("Error gettting a person!");
+                _logger.LogError($"Error gettting person in service! Data: {id} Error: {e}");
+                throw new Exception($"Error gettting a person! Error: {e.Message}");
             }
         }
 
@@ -81,14 +90,14 @@ namespace SampleCrud.Application.Services
             try
             {
                 _logger.LogInformation("Init process getting all persons");
-                var result = await _personRepository.GetPersons();
-                _logger.LogInformation($"Persons found: {result.Count()}, {result}");
-                return result ?? new List<Person>(); 
+                var _persons = await _personRepository.GetPersons();
+                _logger.LogInformation($"Persons found: {_persons.Count()}, {_persons}");
+                return _persons ?? new List<Person>();
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error gettting persons in service! Error: {e}");
-                throw new Exception("Error gettting all persons!");
+                throw new Exception($"Error gettting all persons! Error: {e.Message}");
             }
         }
 
@@ -105,6 +114,10 @@ namespace SampleCrud.Application.Services
                 if (_person != null)
                 {
                     _logger.LogInformation($"Person found: {_person}");
+                    // // Remove person from cache
+                    // await _cacheRepository.Remove(_person.Id.ToString());
+                    // _logger.LogInformation($"Person removed from cache: {_person}");
+                    // Remove person from repository
                     _personRepository.Remove(_person);
                     _logger.LogInformation($"Person removed: {_person}");
                 }
@@ -130,7 +143,7 @@ namespace SampleCrud.Application.Services
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error updating person in service! Data: {person} Error: {e}");   
+                _logger.LogError($"Error updating person in service! Data: {person} Error: {e}");
                 throw new Exception("Error updating a person!");
             }
         }

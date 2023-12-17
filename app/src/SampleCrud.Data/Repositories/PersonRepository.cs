@@ -71,7 +71,7 @@ namespace SampleCrud.Data.Repositories
             {
                 _logger.LogInformation("Init process getting all persons in repository");
                 var result = await _context.Person.ToListAsync();
-                _logger.LogInformation($"Persons found: {result.Count}, {result}");   
+                _logger.LogInformation($"Persons found: {result.Count}, {result}");
                 return result;
             }
             catch (Exception e)

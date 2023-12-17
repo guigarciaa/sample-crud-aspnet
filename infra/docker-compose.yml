@@ -84,29 +84,31 @@ services:
       resources:
         limits:
           cpus: '0.15'
-          memory: '0.5GB'
+          memory: '1GB'
 
   redis:
     container_name: sample_crud_app_redis
-    image: redis
+    image: redis:latest
     ports:
       - "6379:6379"
     networks:
       - host
     volumes:
+      - ../../infra/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - samplecrudaspnet-data:/usr/share/redis/data
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
     deploy:
       resources:
         limits:
-          cpus: '0.15'
+          cpus: '0.5'
           memory: '0.5GB'
 
   samplecrudapi_01: &samplecrudapi
     container_name: samplecrudapi_01
     image: samplecrudapi
     build:
-      context: ../app/src
-      dockerfile: .
+      context: ../app/src/
+      dockerfile: Dockerfile
     ports:
       - "5261:80"
     expose:
@@ -114,15 +116,19 @@ services:
     depends_on:
       - elasticsearch
       - postgres
-    restart: on-failure:10
+      - redis
+    restart: always
     environment:
       - DBHOST=Server=sample_crud_app_postgres;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
       - ASPNETCORE_ENVIRONMENT=Production
+      - REDIS=redis:6379, abortConnect=false
     volumes:
       - samplecrudaspnet-data:/usr/share/samplecrudapi/data
     networks:
       - host
+    links:
+      - redis
     deploy:
       resources:
         limits:
@@ -151,7 +157,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '0.5'
           memory: '0.5GB'
 
 networks:

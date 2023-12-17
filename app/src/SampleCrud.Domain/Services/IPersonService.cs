@@ -24,7 +24,8 @@ namespace SampleCrud.Domain.Services
         /// Adds a new person.
         /// </summary>
         /// <param name="person">The person to add.</param>
-        void Add(Person person);
+        
+        Task Add(Person person);
 
         /// <summary>
         /// Updates an existing person.
