@@ -2,12 +2,28 @@ import http from "k6/http";
 import { sleep } from "k6";
 
 export const options = {
-  // Key configurations for Stress in this section
-  stages: [
-    { duration: "1m", target: 600 }, // traffic ramp-up from 1 to a higher 200 users over 10 minutes.
-    { duration: "1m", target: 600 }, // stay at higher 200 users for 30 minutes
-    { duration: "1m", target: 0 }, // ramp-down to 0 users
-  ],
+  scenarios: {
+    pre_warmup: {
+      executor: "shared-iterations",
+      vus: 2,
+      iterations: 10,
+      startTime: "0s",
+    },
+    warmup: {
+      executor: "shared-iterations",
+      vus: 10,
+      iterations: 20,
+      startTime: "10s",
+    },
+    stress: {
+      executor: "ramping-vus",
+      startTime: "30s",
+      stages: [
+        { duration: "3m", target: 600 },
+        { duration: "1m", target: 0 },
+      ],
+    },
+  },
 };
 
 export default () => {
@@ -25,7 +41,5 @@ export default () => {
     },
   };
   http.post(url, body, params);
-  sleep(1);
-  http.get(url);
   sleep(1);
 };
