@@ -17,9 +17,10 @@ export const options = {
     },
     stress: {
       executor: "ramping-vus",
-      startTime: "30s",
+      startTime: "20s",
       stages: [
-        { duration: "3m", target: 600 },
+        { duration: "3m", target: 3424 },
+        { duration: "1m", target: 3424 },
         { duration: "1m", target: 0 },
       ],
     },
@@ -27,7 +28,12 @@ export const options = {
 };
 
 export default () => {
-  const url = "http://127.0.0.1:9999/api/person";
+  const url = "http://localhost:9999/api/person";
+  const params = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
   const body = JSON.stringify({
     nickname: "nick123",
     name: "nick",
@@ -35,11 +41,6 @@ export default () => {
     birthday: "2023-12-07",
     stack: ["c#"],
   });
-  const params = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
   http.post(url, body, params);
   sleep(1);
 };
