@@ -2,17 +2,17 @@ using Prometheus;
 using SampleCrud.API;
 using SampleCrud.Infra.Injector;
 using SampleCrud.Infra.Utils;
+using Serilog;
 // using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Host.AddSerilogLogging(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbInfrastructure(builder.Configuration);
-
-builder.Host.AddSerilogLogging(builder.Configuration);
 
 builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck))
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging();
 
 app.UseHttpMetrics();
 
