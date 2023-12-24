@@ -6,23 +6,22 @@ export const options = {
   scenarios: {
     pre_warmup: {
       executor: "shared-iterations",
-      vus: 4,
+      vus: 2,
       iterations: 10,
       startTime: "0s",
     },
     warmup: {
       executor: "shared-iterations",
-      vus: 8,
-      iterations: 20,
+      vus: 5,
+      iterations: 10,
       startTime: "10s",
     },
     stress: {
       executor: "ramping-vus",
       startTime: "20s",
+      startVUs: 6,
       stages: [
-        { duration: "3m", target: 500 },
-        { duration: "1m", target: 500 },
-        { duration: "1m", target: 0 },
+        { duration: "3m", target: 600 }
       ],
     },
   },
