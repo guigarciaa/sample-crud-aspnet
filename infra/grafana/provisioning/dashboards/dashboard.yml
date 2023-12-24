@@ -2,7 +2,7 @@ apiVersion: 1
 
 providers:
   - name: Default # A uniquely identifiable name for the provider
-    folder: Services # The folder where to place the dashboards
+    folder: Telemetry App # The folder where to place the dashboards
     type: file
     options:
-      path: /etc/grafana/provisioning/dashboards
+      path: /etc/grafana/provisioning/dashboards # Path to dashboard files on disk
