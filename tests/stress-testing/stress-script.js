@@ -1,3 +1,4 @@
+import faker from "https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js";
 import http from "k6/http";
 import { sleep } from "k6";
 
@@ -11,36 +12,36 @@ export const options = {
     },
     warmup: {
       executor: "shared-iterations",
-      vus: 10,
-      iterations: 20,
+      vus: 5,
+      iterations: 10,
       startTime: "10s",
     },
     stress: {
       executor: "ramping-vus",
       startTime: "20s",
-      stages: [
-        { duration: "3m", target: 3424 },
-        { duration: "1m", target: 3424 },
-        { duration: "1m", target: 0 },
-      ],
+      startVUs: 6,
+      stages: [{ duration: "3m", target: 600 }],
     },
   },
 };
 
-export default () => {
-  const url = "http://localhost:9999/api/person";
+export default (data) => {
+  const url = "http://nginx:9999/api/person";
   const params = {
     headers: {
       "Content-Type": "application/json",
     },
   };
-  const body = JSON.stringify({
-    nickname: "nick123",
-    name: "nick",
-    email: "nicknick@example.com",
-    birthday: "2023-12-07",
-    stack: ["c#"],
-  });
-  http.post(url, body, params);
+  // const data = Generator();
+  const Generator = () => {
+    return JSON.stringify({
+      nickname: faker.internet.userName(),
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      birthday: faker.date.past(10),
+      stack: ["c#"],
+    });
+  };
+  http.post(url, Generator(), params);
   sleep(1);
 };

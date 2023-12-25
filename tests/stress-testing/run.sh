@@ -1,6 +1,6 @@
 docker pull grafana/k6;
 
-docker run  --cpus=0.5 --memory=0.5 --net=infra_samplecrudnetwork \
-            --rm -i grafana/k6 run - <local-import-person-data.js;
+docker volume create k6-vol;
 
-# docker run --net=host -v ./../mass/:/usr/share/mass/ --rm -i grafana/k6 run - <local-import-person-data.js
+docker run  --cpus=1 --memory=4880m --net=infra_samplecrudnetwork --name k6-stress-test-container -v k6-vol:/data \
+            --rm -i grafana/k6 run - <stress-script.js;
