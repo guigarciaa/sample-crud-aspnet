@@ -33,7 +33,7 @@ namespace SampleCrud.Domain.Entities
         [
             Required(ErrorMessage = "Birthday is required"),
         ]
-        public DateOnly? Birthday { get; set; }
+        public DateTime Birthday { get; set; }
 
         public List<string> Stack { get; set; }
 
@@ -42,7 +42,7 @@ namespace SampleCrud.Domain.Entities
             Stack = new List<string>();
         }
 
-        public Person(string nickname, string name, string email, DateOnly birthday, List<string> stack)
+        public Person(string nickname, string name, string email, DateTime birthday, List<string> stack)
         {
             Nickname = nickname;
             Name = name;
@@ -104,23 +104,10 @@ namespace SampleCrud.Domain.Entities
 
             #endregion
 
-            #region Birthday Validations
-
-            if (Birthday == null)
-            {
-                _errors.Add("Birthday is required");
-            }
-            if (Birthday != null && Birthday.Value > DateOnly.FromDateTime(DateTime.Now))
-            {
-                _errors.Add("Birthday must be less than or equal to the current date");
-            }
-
-            #endregion
-
             #region Stack Validations
 
             if (Stack != null && Stack.Count > 0)
-            {
+            {   
                 var verifyLengthEnchStack = Stack.Exists(x => x.Length > 32);
                 if (verifyLengthEnchStack)
                 {

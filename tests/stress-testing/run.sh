@@ -1,5 +1,6 @@
 docker pull grafana/k6;
 
-# docker pull grafana/k6:master-with-browser;
+docker volume create k6-vol;
 
-docker run --net=host --rm -i grafana/k6 run - <script.js;
+docker run  --cpus=1 --memory=4880m --net=infra_samplecrudnetwork --name k6-stress-test-container -v k6-vol:/data \
+            --rm -i grafana/k6 run - <stress-script.js;

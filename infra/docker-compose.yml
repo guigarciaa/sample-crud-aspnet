@@ -8,7 +8,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      - host
+      - samplecrudnetwork
     environment:
       - cluster.name=docker-cluster
       - discovery.type=single-node
@@ -17,9 +17,63 @@ services:
     volumes:
       - samplecrudaspnet-data:/usr/share/elasticsearch/data
 
+  prometheus:
+    container_name: sample_crud_app_prometheus
+    image: prom/prometheus:v2.48.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - samplecrudaspnet-data:/usr/share/prometheus/data
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - samplecrudnetwork
+
+  grafana:
+    container_name: sample_crud_app_grafana
+    image: grafana/grafana:10.2.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
+      - samplecrudaspnet-data:/usr/share/grafana/data
+    networks:
+      - samplecrudnetwork
+
+  kibana:
+    container_name: sample_crud_app_kibana
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    ports:
+      - "5601:5601"
+    networks:
+      - samplecrudnetwork
+    depends_on:
+      - elasticsearch
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+    volumes:
+      - samplecrudaspnet-data:/usr/share/kibana/data
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - 9187:9187
+    networks:
+      - samplecrudnetwork
+    environment:
+      DATA_SOURCE_NAME: "postgresql://admin:postgres@postgres:5432/sample_crud_db?sslmode=disable"
+    volumes:
+      - samplecrudaspnet-data:/usr/share/postgres-exporter/data
+    links:
+      - postgres
+      - prometheus
+
   postgres:
     container_name: sample_crud_app_postgres
-    image: postgres
+    image: postgres:16.1-alpine
     restart: always
     ports:
       - "5432:5432"
@@ -33,7 +87,7 @@ services:
       - samplecrudaspnet-data:/usr/share/postgres/data
     command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
     networks:
-      - host
+      - samplecrudnetwork
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 5s
@@ -43,55 +97,15 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.15'
-          memory: '0.5GB'
-
-  prometheus:
-    container_name: sample_crud_app_prometheus
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - samplecrudaspnet-data:/usr/share/prometheus/data
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    networks:
-      - host
-
-  grafana:
-    container_name: sample_crud_app_grafana
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana/provisioning/datasource/:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards
-      - samplecrudaspnet-data:/usr/share/grafana/data
-    networks:
-      - host
-
-  kibana:
-    container_name: sample_crud_app_kibana
-    image: docker.elastic.co/kibana/kibana:8.7.1
-    ports:
-      - "5601:5601"
-    networks:
-      - host
-    depends_on:
-      - elasticsearch
-    environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-    volumes:
-      - samplecrudaspnet-data:/usr/share/kibana/data
+          cpus: '0.5'
+          memory: '1.5GB'
 
   samplecrudapi_01: &samplecrudapi
     container_name: samplecrudapi_01
     image: samplecrudapi
     build:
       context: ../app/src
-      dockerfile: .
+      dockerfile: Dockerfile
     ports:
       - "5261:80"
     expose:
@@ -99,7 +113,7 @@ services:
     depends_on:
       - elasticsearch
       - postgres
-    restart: on-failure:10
+    restart: always
     environment:
       - DBHOST=Server=sample_crud_app_postgres;Port=5432;Database=sample_crud_db;Username=admin;Password=postgres
       - ELASTICSEARCH_URL=http://elasticsearch:9200/
@@ -107,11 +121,11 @@ services:
     volumes:
       - samplecrudaspnet-data:/usr/share/samplecrudapi/data
     networks:
-      - host
+      - samplecrudnetwork
     deploy:
       resources:
         limits:
-          cpus: '0.15'
+          cpus: '0.25'
           memory: '0.5GB'
 
   samplecrudapi_02:
@@ -122,7 +136,7 @@ services:
 
   nginx:
     container_name: sample_crud_app_nginx
-    image: nginx:latest
+    image: nginx:1.25.3-alpine-slim
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - samplecrudaspnet-data:/usr/share/nginx/data
@@ -132,15 +146,15 @@ services:
     ports:
       - "9999:9999"
     networks:
-      - host
+      - samplecrudnetwork
     deploy:
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '0.5'
           memory: '0.5GB'
 
 networks:
-  host:
+  samplecrudnetwork:
     driver: bridge
 
 volumes:
