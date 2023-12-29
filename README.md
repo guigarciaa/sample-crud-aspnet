@@ -13,12 +13,15 @@ to support additional entities and operations as needed.
 <!-- ![Architecture](./docs/sample_crud_api.drawio.svg) -->
 
 <p align="center" width="100%">
-    <img width="33%" src="./docs/sample_crud_api.svg">
+    <img width="33%" src="./docs/infra.svg">
 </p>
+
+#### **All instances of app more postgres more Nginx running in 1.5 CPU`s and 3GB RAM**
 
 # Running this project
 ```bash
 foo@bar:~$ cd infra/
+
 foo@bar:~$ ./run.sh
 ```
 
@@ -35,15 +38,23 @@ Elasticsearch will be available at http://localhost:9200
 
 Prometheus will be available at http://localhost:9090
 
-API will be available at http://localhost:5000
+API will be available at:
+- Instance One: http://localhost:5261
+- Instance Two: http://localhost:5262
+
+Load Balancer (nginx) will be available at http://localhost:9999
 
 Postgres will be available at http://localhost:5432
+
+# Running Stress Tests
+```bash 
+foo@bar:~$ cd ./tests/stress-tests/
+
+foo@bar:~$ ./run.sh
+```
 
 # Debugging API
 Running the project in debug mode is as simple as running the following command: **F5.** *(In Visual Studio Code)*
 
 All Tasks and Lanch will be executed automatically.
-
-<!-- # API Documentation -->
-
 
