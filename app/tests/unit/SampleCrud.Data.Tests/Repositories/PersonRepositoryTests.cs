@@ -9,12 +9,10 @@ namespace SampleCrud.Data.Tests.Repositories;
 
 public class PersonRepositoryTests
 {
-    private readonly Mock<SampleCrudDbContext> _mockSampleCrudDbContext;
     private readonly Mock<ILogger<PersonRepository>> _mockLogger;
 
     public PersonRepositoryTests()
     {
-        _mockSampleCrudDbContext = new Mock<SampleCrudDbContext>();
         _mockLogger = new Mock<ILogger<PersonRepository>>();
     }
 
@@ -57,18 +55,27 @@ public class PersonRepositoryTests
         var mockSet = new Mock<DbSet<Person>>();
         var mockContext = new Mock<SampleCrudDbContext>();
         mockContext.Setup(m => m.Person).Returns(mockSet.Object);
-        mockContext.Setup(m => m.Person.FindAsync(typeof(Guid), It.IsAny<Guid>())).ReturnsAsync(new Person
+        var personIdMock = Guid.NewGuid();
+
+        mockContext.Setup(m => m.Person)
+        .Returns(mockSet.Object);
+
+        mockContext.Setup(m => m.Person.FindAsync(personIdMock))
+        .ReturnsAsync(new Person()
         {
-            Id = Guid.NewGuid(),
+            Id = personIdMock,
             Name = "Teste 1",
-            Email = ""
+            Nickname = "Teste 1",
+            Email = "unitemail@unit.com",
+            Birthday = new DateTime(2008, 3, 9, 1, 30, 0),
+            Stack = new List<string>()
         });
 
         // Act
         var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
-        var person = await service.GetById(Guid.NewGuid());
-
+        var person = await service.GetById(personIdMock);
         // Assert
+        mockContext.Verify(m => m.Person.FindAsync(personIdMock), Times.Once());
         Assert.NotNull(person);
     }
 
@@ -83,7 +90,7 @@ public class PersonRepositoryTests
 
         // Act
         var service = new PersonRepository(_mockLogger.Object, mockContext.Object);
-        
+
         // Assert
         Assert.ThrowsAsync<Exception>(() => service.GetById(Guid.NewGuid()));
     }
@@ -135,7 +142,8 @@ public class PersonRepositoryTests
     }
 
     [Fact]
-    public void Should_Be_True_If_Update_a_Person_in_DBSet_Person() {
+    public void Should_Be_True_If_Update_a_Person_in_DBSet_Person()
+    {
         // Arrange
         var mockSet = new Mock<DbSet<Person>>();
         var mockContext = new Mock<SampleCrudDbContext>();

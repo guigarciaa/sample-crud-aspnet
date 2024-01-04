@@ -23,6 +23,11 @@ namespace SampleCrud.API.Controllers
             try
             {
                 var persons = await _personService.GetPersons();
+                if (persons.Count() == 0)
+                {
+                    _logger.LogError($"Persons not found!");
+                    return NotFound("Persons not found.");
+                }
 
                 _logger.LogInformation($"Persons found: {persons.Count()}, {persons}");
                 return Ok(persons);

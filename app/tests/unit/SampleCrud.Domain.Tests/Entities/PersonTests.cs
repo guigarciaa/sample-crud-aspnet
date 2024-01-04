@@ -8,11 +8,10 @@ namespace SampleCrud.Domain.Tests.Entities
         public void Should_Success_If_Person_Created()
         {
             // Arrange
-            // Arrange
-            var nickname = "teste";
-            var name = "teste";
-            var email = "teste@teste.com";
-            var birthday = new DateOnly();
+            var nickname = "somename1";
+            var name = "somename";
+            var email = "unitemail@unit.com";
+            var birthday = new DateTime();
             var stack = new List<string>();
 
             // Act
@@ -29,8 +28,8 @@ namespace SampleCrud.Domain.Tests.Entities
             // Arrange
             var nickname = "teste";
             var name = "";
-            var email = "teste@teste.com";
-            var birthday = new DateOnly();
+            var email = "unitemail@unit.com";
+            var birthday = new DateTime();
             var stack = new List<string>();
 
             // Act
@@ -47,8 +46,8 @@ namespace SampleCrud.Domain.Tests.Entities
             // Arrange
             var nickname = "teste";
             var name = "te";
-            var email = "teste@teste.com";
-            var birthday = new DateOnly();
+            var email = "unitemail@unit.com";
+            var birthday = new DateTime();
             var stack = new List<string>();
 
             // Act
@@ -65,8 +64,8 @@ namespace SampleCrud.Domain.Tests.Entities
             // Arrange
             var nickname = "teste";
             var name = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget ultricies ultricies, nisl nisl ultricies elit, eget ultricies elit elit eget elit.";
-            var email = "teste@teste.com";
-            var birthday = new DateOnly();
+            var email = "unitemail@unit.com";
+            var birthday = new DateTime();
             var stack = new List<string>();
 
             // Act
@@ -81,10 +80,10 @@ namespace SampleCrud.Domain.Tests.Entities
         public void Should_Fail_If_Trying_Create_Person_With_Stack_Grater_Than_ThrityTwo_Characters()
         {
             // Arrange
-            var nickname = "teste";
-            var name = "teste";
-            var email = "teste@teste.com";
-            var birthday = new DateOnly();
+            var nickname = "somename1";
+            var name = "somename";
+            var email = "unitemail@unit.com";
+            var birthday = new DateTime();
             var stack = new List<string>() { "Lorem ipsum dolor sit amet, consectetur adipiscing elit." };
 
             // Act

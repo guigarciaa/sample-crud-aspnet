@@ -47,12 +47,13 @@ namespace SampleCrud.Data.Repositories
         /// </summary>
         /// <param name="id">The ID of the person to retrieve.</param>
         /// <returns>The person with the specified ID, or null if not found.</returns>
-        public async Task<Person?> GetById(Guid? id)
+        public async Task<Person?> GetById(Guid id)
         {
             try
             {
                 _logger.LogInformation($"Getting person by id: {id}");
-                return await _context.Person.FindAsync(id) ?? null;
+                var result = await _context.Person.FindAsync(id);
+                return result ?? null;
             }
             catch (Exception e)
             {

@@ -18,7 +18,7 @@ namespace SampleCrud.Domain.Repositories
         /// </summary>
         /// <param name="id">The ID of the person to retrieve.</param>
         /// <returns>An asynchronous operation that represents the retrieval of the person. Returns null if the person is not found.</returns>
-        Task<Person?> GetById(Guid? id);
+        Task<Person?> GetById(Guid id);
 
         /// <summary>
         /// Adds a new person.

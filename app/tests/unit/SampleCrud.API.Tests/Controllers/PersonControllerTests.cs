@@ -29,7 +29,7 @@ public class PersonControllerTests
                 {
                     Id = Guid.NewGuid(),
                     Name = "Teste",
-                    Birthday = DateOnly.FromDateTime(DateTime.Now),
+                    Birthday = DateTime.Now,
                     Email = ""
                 }
             });
@@ -68,7 +68,7 @@ public class PersonControllerTests
             {
                 Id = Guid.NewGuid(),
                 Name = "Teste",
-                Birthday = DateOnly.FromDateTime(DateTime.Now),
+                Birthday = DateTime.Now,
                 Email = ""
             });
         
@@ -138,7 +138,7 @@ public class PersonControllerTests
             {
                 Id = Guid.NewGuid(),
                 Name = "Teste",
-                Birthday = DateOnly.FromDateTime(DateTime.Now),
+                Birthday = DateTime.Now,
                 Email = ""
             });
 

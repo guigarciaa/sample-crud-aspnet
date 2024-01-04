@@ -3,19 +3,18 @@ using Moq;
 using SampleCrud.Application.Services;
 using SampleCrud.Domain.Entities;
 using SampleCrud.Domain.Repositories;
-using SampleCrud.Domain.Services;
 
 namespace SampleCrud.Application.Tests;
 
 public class PersonServicesTests
 {
     private readonly Mock<IPersonRepository> _mockPersonRepository;
-    private readonly Mock<ILogger<PersonServices>> _mockLogger;
+    private readonly Mock<ILogger<PersonService>> _mockLogger;
 
     public PersonServicesTests()
     {
         _mockPersonRepository = new Mock<IPersonRepository>();
-        _mockLogger = new Mock<ILogger<PersonServices>>();
+        _mockLogger = new Mock<ILogger<PersonService>>();
     }
 
     [Fact]
@@ -26,10 +25,13 @@ public class PersonServicesTests
         {
             Id = Guid.NewGuid(),
             Name = "Teste 1",
-            Email = ""
+            Nickname = "Teste 1",
+            Email = "unitemail@unit.com",
+            Birthday = DateTime.Now,
+            Stack = new List<string>()
         };
         _mockPersonRepository.Setup(x => x.Add(person));
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Act
         personServices.Add(person);
@@ -49,7 +51,7 @@ public class PersonServicesTests
             Email = ""
         };
         _mockPersonRepository.Setup(x => x.Update(person));
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Act
         personServices.Update(person);
@@ -70,7 +72,7 @@ public class PersonServicesTests
         };
         _mockPersonRepository.Setup(x => x.Remove(person));
         _mockPersonRepository.Setup(x => x.GetById(person.Id)).ReturnsAsync(person);
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Act
         personServices.Remove(person.Id);
@@ -90,7 +92,7 @@ public class PersonServicesTests
             Email = ""
         };
         _mockPersonRepository.Setup(x => x.GetById(person.Id)).ReturnsAsync(person);
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Act
         var result = await personServices.GetById(person.Id);
@@ -114,7 +116,7 @@ public class PersonServicesTests
             person
         };
         _mockPersonRepository.Setup(x => x.GetPersons()).ReturnsAsync(persons);
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Act
         var result = await personServices.GetPersons();
@@ -130,7 +132,7 @@ public class PersonServicesTests
         _mockPersonRepository.Setup(x => x.GetPersons()).Throws(new Exception());
 
         // Act
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Assert
         Assert.ThrowsAsync<Exception>(() => personServices.GetPersons());
@@ -144,7 +146,7 @@ public class PersonServicesTests
         _mockPersonRepository.Setup(x => x.GetById(It.IsAny<Guid>())).Throws(new Exception());
 
         // Act
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Assert
         Assert.ThrowsAsync<Exception>(() => personServices.GetById(It.IsAny<Guid>()));
@@ -157,7 +159,7 @@ public class PersonServicesTests
         _mockPersonRepository.Setup(x => x.GetById(It.IsAny<Guid>())).Throws(new Exception());
 
         // Act
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Assert
         Assert.ThrowsAsync<Exception>(() => personServices.GetById(It.IsAny<Guid>()));
@@ -170,7 +172,7 @@ public class PersonServicesTests
         _mockPersonRepository.Setup(x => x.Update(It.IsAny<Person>())).Throws(new Exception());
 
         // Act
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
         var person = new Person
         {
             Id = Guid.NewGuid(),
@@ -188,7 +190,7 @@ public class PersonServicesTests
         _mockPersonRepository.Setup(x => x.Add(It.IsAny<Person>())).Throws(new Exception());
 
         // Act
-        var personServices = new PersonServices(_mockLogger.Object, _mockPersonRepository.Object);
+        var personServices = new PersonService(_mockLogger.Object, _mockPersonRepository.Object);
 
         // Assert
         Assert.Throws<Exception>(() => personServices.Add(It.IsAny<Person>()));
